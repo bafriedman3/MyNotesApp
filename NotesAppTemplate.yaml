@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Notes App existing resources import
+
+Resources:
+
+  # S3 bucket for front-end
+  NotesAppBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: boris-notes-app
+
+  # Lambda function
+  NotesRetrieveLambdaFunction:
+    Type: AWS::Lambda::Function
+    DeletionPolicy: Retain
+    Properties:
+      FunctionName: notes-function
+      Handler: lambda_function.lambda_handler  # update if different
+      Runtime: python3.14  # adjust to your runtime
+      Role: arn:aws:iam::714163356458:role/service-role/notes-function-role-ke9iat6o  # your existing role ARN
+      Code:
+        S3Bucket: placeholder
+        S3Key: placeholder.zip
+      
+  # Lambda function
+  NotesUpdateLambdaFunction:
+    Type: AWS::Lambda::Function
+    DeletionPolicy: Retain
+    Properties:
+      FunctionName: update-notes-function
+      Handler: lambda_function.lambda_handler  # update if different
+      Runtime: python3.14  # adjust to your runtime
+      Role: arn:aws:iam::714163356458:role/service-role/update-notes-function-role-2yh9umws  # your existing role ARN
+      Code:
+        S3Bucket: placeholder
+        S3Key: placeholder.zip
+
+  # API Gateway
+  NotesApiGateway:
+    Type: AWS::ApiGateway::RestApi
+    DeletionPolicy: Retain
+    Properties:
+      Name: Notes API
+      Description: Existing API Gateway for Notes app
