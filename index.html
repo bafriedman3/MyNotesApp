@@ -1,0 +1,177 @@
+<html>
+<head>
+	<title>Notes</title>
+	<style>
+      .editableText {
+        color: blue; /* Standard link color */
+        text-decoration: underline; /* Standard link underline */
+        cursor: pointer; /* Change mouse cursor to a hand pointer */
+        font-size: 1.2em; /* Make it easily visible */
+      }
+      .editInput, .saveButton {
+        padding: 5px;
+        margin-left: 10px;
+      }
+    </style>
+	<script src="https://cdn.jsdelivr.net/npm/aws-amplify@4.3.32/dist/aws-amplify.js"></script>
+</head>
+<body>
+<h1>Notes</h1>
+<p id="notes"></p>
+<div id="noteContainer"></div>
+<button id="logoutBtn">Sign Out</button>
+</body>
+<script>
+aws_amplify.Amplify.Auth.signOut({ global: true });
+</script>
+<script>
+  // 1. Configure Amplify
+  window.onload = async function() {
+  aws_amplify.Amplify.configure({
+    Auth: {
+      region: "us-east-1",
+      userPoolId: "us-east-1_gHD8mRDi2",
+      userPoolWebClientId: "29ufjq8g5t6k4pts2jjne0diab",
+      oauth: {
+        domain: "us-east-1ghd8mrdi2.auth.us-east-1.amazoncognito.com",
+        scope: ["openid", "email"],
+        redirectSignIn: "https://boris-notes-app.s3.us-east-1.amazonaws.com/index.html",
+        redirectSignOut: "https://boris-notes-app.s3.us-east-1.amazonaws.com/index.html",
+        responseType: "code"
+      }
+    }
+  });
+  try {
+      const user = await aws_amplify.Amplify.Auth.currentAuthenticatedUser();
+      window.claims = user.signInUserSession.idToken.payload;
+
+	  console.log("User ID (sub):", window.claims.sub);
+      console.log("Email:", window.claims.email);
+      console.log("Username:", window.claims["cognito:username"]);
+  //console.log("User ID:", user.attributes.sub);
+  //console.log("User email:", user.attributes.email);
+	  console.log("running js")
+	  // Check if we have an ID token already
+	  
+	  const userAction = async () => {
+		console.log("inside function")
+		const userName = window.claims["cognito:username"]
+		console.log("in main user name is " + userName) 
+		const response = await fetch('https://jtjdqzd1qa.execute-api.us-east-1.amazonaws.com/dev/notes?userId=' + userName);
+		const myJson = await response.json(); //extract JSON from the http response
+		// do something with myJson
+		console.log(myJson)
+		const data = JSON.parse(myJson.body)
+		console.log("userId: " + data[0].userId + " noteId: " + data[0].noteId)
+		for(let i=0; i<data.length; i++) {
+			const newParagraph = document.createElement('p');
+			newParagraph.setAttribute('id', "notePar"+i)
+			const newSpan = document.createElement('span');
+			const newInputField = document.createElement("textarea")
+			newInputField.style.fieldSizing = 'content';
+			const newSaveButton = document.createElement("button")
+			newSaveButton.textContent = "Save"
+			newInputField.style.display = 'none';
+			newSaveButton.style.display = 'none';
+			newSpan.addEventListener('click', function() {
+				// 1. Set the input field's value to the current text
+				newInputField.value = newSpan.textContent;
+				
+				// 2. Hide the span and show the input field and button
+				newSpan.style.display = 'none';
+				newInputField.style.display = 'inline-block';
+				newSaveButton.style.display = 'inline-block';
+				
+				// 3. Automatically focus on the input field
+				newInputField.focus();
+			});
+			newSaveButton.addEventListener('click', function() {
+				// 1. Get the new value
+				const newText = newInputField.value;
+				
+				// 2. Update the visible text
+				newSpan.textContent = newText;
+				
+				// 3. Hide the input field and button, and show the text span again
+				newSpan.style.display = 'inline';
+				newInputField.style.display = 'none';
+				newSaveButton.style.display = 'none';
+
+				// NOTE: If you were connecting to a database, the save logic goes here!
+				const apiUrl = 'https://jtjdqzd1qa.execute-api.us-east-1.amazonaws.com/dev/notes/update';
+				const postData = {
+					userId: data[i].userId,
+					noteId: data[i].noteId,
+					content: newText
+				};
+
+				fetch(apiUrl, {
+					// 1. Specify the method
+					method: 'POST', 
+					
+					// 2. Set the headers (crucial for sending JSON)
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					
+					// 3. Convert the JavaScript object to a JSON string for the body
+					body: JSON.stringify(postData) 
+				})
+				.then(response => {
+					// Check if the request was successful (status 200-299)
+					if (!response.ok) {
+						throw new Error(`HTTP error! status: ${response.status}`);
+					}
+					// Parse the JSON body from the response
+					console.log('Success:', response);
+					return response.json()
+				})
+				.then(data => {
+					console.log("Parsed response JSON:", data);
+
+					// Now you can access your fields:
+					console.log("statusCode:", data.statusCode);
+					console.log("body:", data.body);
+				})
+				.catch(error => {
+					// Handle any errors during the fetch or promise chain
+					console.error('Error sending POST request:', error);
+				});
+			});
+			newSpan.setAttribute('id', "noteSpan"+i)
+			newSpan.textContent = data[i].content
+			newSpan.classList.add("editableText")
+			newParagraph.textContent = data[i].noteId + " "
+			newParagraph.appendChild(newSpan);
+			newInputField.classList.add("editInput");
+			newSaveButton.classList.add("saveButton");
+			newParagraph.appendChild(newInputField);
+			newParagraph.appendChild(newSaveButton);
+			document.getElementById("noteContainer").appendChild(newParagraph)
+		}
+	  }
+	  userAction()
+	  } catch (err) {
+		  aws_amplify.Amplify.Auth.federatedSignIn(); // redirects to Hosted UI
+	  }
+}
+</script>
+<script>
+  const logoutBtn = document.getElementById("logoutBtn");
+  logoutBtn.addEventListener("click", async () => {
+  try {
+    // Clear Amplify session locally
+    await aws_amplify.Auth.signOut({ global: false }); // local only, avoids the NotAuthorizedException
+
+    // Redirect to Cognito Hosted UI logout to clear the session
+    window.location.href =
+      "https://us-east-1ghd8mrdi2.auth.us-east-1.amazoncognito.com/logout" +
+      "?client_id=29ufjq8g5t6k4pts2jjne0diab" +
+      "&logout_uri=https://boris-notes-app.s3.us-east-1.amazonaws.com/index.html";
+
+  } catch (err) {
+    console.error("Error signing out:", err);
+  }
+});
+</script>
+</html>
