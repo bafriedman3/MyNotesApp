@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - echo "Zipping Lambda code"
+      - cd lambda/notes-function && zip -r ../../notes-function.zip . && cd ../..
+      - cd lambda/update-notes-function && zip -r ../../update-notes-function.zip . && cd ../..
+
+artifacts:
+  files:
+    - template.yaml
+    - notes-function.zip
+    - update-notes-function.zip
+    - index.html
+    - **/*
