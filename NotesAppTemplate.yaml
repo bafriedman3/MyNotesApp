@@ -1,6 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Notes App existing resources import
 
+Parameters:
+  ArtifactBucket:
+    Type: String
+    Description: Name of the S3 bucket used for pipeline artifacts
+
 Resources:
 
   # S3 bucket for front-end
