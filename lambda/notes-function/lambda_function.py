@@ -3,7 +3,6 @@ import boto3
 
 def lambda_handler(event, context):
     # This function retrieves notes for a particular user
-    print("running notes function")
     print(event)
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('UserNotes')
