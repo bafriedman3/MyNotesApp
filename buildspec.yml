@@ -6,10 +6,10 @@ phases:
       - echo "Zipping Lambda code"
       - cd lambda/notes-function && zip -r ../../notes-function.zip . && cd ../..
       - cd lambda/update-notes-function && zip -r ../../update-notes-function.zip . && cd ../..
+      - aws s3 cp notes-function.zip s3://$ARTIFACT_BUCKET/notes-function.zip
+      - aws s3 cp update-notes-function.zip s3://$ARTIFACT_BUCKET/update-notes-function.zip
 
 artifacts:
   files:
     - NotesAppTemplate.yaml
-    - notes-function.zip
-    - update-notes-function.zip
     - index.html
