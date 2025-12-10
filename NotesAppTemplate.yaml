@@ -8,13 +8,6 @@ Parameters:
 
 Resources:
 
-  # S3 bucket for front-end
-  NotesAppBucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties:
-      BucketName: boris-notes-app
-
   # Lambda function
   NotesRetrieveLambdaFunction:
     Type: AWS::Lambda::Function
