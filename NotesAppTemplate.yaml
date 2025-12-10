@@ -20,6 +20,15 @@ Resources:
       Code:
         S3Bucket: !Ref ArtifactBucket
         S3Key: notes-function.zip
+  
+  NotesFunctionPermission:
+  Type: AWS::Lambda::Permission
+  Properties:
+    FunctionName: !Ref NotesRetrieveLambdaFunction
+    Action: lambda:InvokeFunction
+    Principal: apigateway.amazonaws.com
+    SourceArn: arn:aws:execute-api:us-east-1:714163356458:jtjdqzd1qa/*/GET/notes
+
       
   # Lambda function
   NotesUpdateLambdaFunction:
@@ -33,6 +42,14 @@ Resources:
       Code:
         S3Bucket: !Ref ArtifactBucket
         S3Key: update-notes-function.zip
+
+  NotesUpdateFunctionPermission:
+  Type: AWS::Lambda::Permission
+  Properties:
+    FunctionName: !Ref NotesUpdateLambdaFunction
+    Action: lambda:InvokeFunction
+    Principal: apigateway.amazonaws.com
+    SourceArn: arn:aws:execute-api:us-east-1:714163356458:jtjdqzd1qa/*/POST/notes/update
 
   # API Gateway
   NotesApiGateway:
