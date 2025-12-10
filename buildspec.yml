@@ -11,7 +11,7 @@ phases:
       - echo "Checking uploaded files"
       - aws s3 ls s3://$ARTIFACT_BUCKET/notes-function.zip
       - aws s3 ls s3://$ARTIFACT_BUCKET/update-notes-function.zip
-      - aws s3 cp index.html s3://boris-notes-app/index.html --acl public-read --content-type "text/html"
+      - aws s3 cp index.html s3://boris-notes-app/index.html --content-type "text/html"
 
 artifacts:
   files:
