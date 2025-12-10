@@ -6,8 +6,8 @@ phases:
       - echo "Zipping Lambda code"
       - cd lambda/notes-function && zip -r ../../notes-function.zip . && cd ../..
       - cd lambda/update-notes-function && zip -r ../../update-notes-function.zip . && cd ../..
-      - aws s3 cp notes-function.zip s3://$ARTIFACT_BUCKET/notes-function.zip
-      - aws s3 cp update-notes-function.zip s3://$ARTIFACT_BUCKET/update-notes-function.zip
+      - aws s3 cp notes-function.zip s3://$ARTIFACT_BUCKET/notes-function.zip --sse aws:kms
+      - aws s3 cp update-notes-function.zip s3://$ARTIFACT_BUCKET/update-notes-function.zip --sse aws:kms
 
 artifacts:
   files:
