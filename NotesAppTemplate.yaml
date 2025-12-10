@@ -14,7 +14,18 @@ Resources:
     DeletionPolicy: Retain
     Properties:
       BucketName: boris-notes-app
-
+  # S3 object for index.html
+  
+  IndexHtmlObject:
+    Type: AWS::S3::Object
+    Properties:
+      Bucket: !Ref NotesAppBucket
+      Key: index.html
+      Source: !Ref ArtifactBucket  # points to pipeline artifact
+      # Optional metadata for updates:
+      Metadata:
+        build-time: !Ref "AWS::StackName"
+  
   # Lambda function
   NotesRetrieveLambdaFunction:
     Type: AWS::Lambda::Function
