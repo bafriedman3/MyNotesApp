@@ -16,6 +16,8 @@ phases:
       - aws s3 cp index.html s3://boris-notes-app/index.html --content-type "text/html"
       # Create a JSON file to pass the Version IDs to the CF stage
       - echo "{\"NotesZipVersion\":\"$NOTES_VERSION_ID\", \"UpdateNotesZipVersion\":\"$UPDATE_NOTES_VERSION_ID\"}" > version-ids.json
+      # checking version-ids file
+      - cat version-ids.json
 
 artifacts:
   files:
