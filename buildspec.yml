@@ -19,3 +19,4 @@ artifacts:
     - index.html
     - notes-function.zip
     - update-notes-function.zip
+  discard-paths: yes    
