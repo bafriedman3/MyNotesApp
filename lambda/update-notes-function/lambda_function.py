@@ -2,6 +2,7 @@ import json
 import boto3
 
 # This function updates the notes with the new content
+# updating the corresponding note in the dynamodb table
 
 def lambda_handler(event, context):
     print(event)
