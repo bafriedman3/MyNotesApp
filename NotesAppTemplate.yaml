@@ -20,6 +20,7 @@ Resources:
       Code:
         S3Bucket: !Ref ArtifactBucket
         S3Key: notes-function.zip
+        S3ObjectVersion: !GetAtt BuildArtifact.VersionId
   
   NotesFunctionPermission:
     Type: AWS::Lambda::Permission
@@ -41,6 +42,7 @@ Resources:
       Code:
         S3Bucket: !Ref ArtifactBucket
         S3Key: update-notes-function.zip
+        S3ObjectVersion: !GetAtt BuildArtifact.VersionId
 
   NotesUpdateFunctionPermission:
     Type: AWS::Lambda::Permission

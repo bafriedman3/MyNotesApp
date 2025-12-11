@@ -17,3 +17,5 @@ artifacts:
   files:
     - NotesAppTemplate.yaml
     - index.html
+    - notes-function.zip
+    - update-notes-function.zip
