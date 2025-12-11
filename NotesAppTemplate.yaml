@@ -8,6 +8,12 @@ Parameters:
   CodePipelineRevision:
     Type: String
     Description: Unique ID to force CloudFormation update.
+  NotesZipVersion: # NEW PARAMETER: Must match the key in version-ids.json
+    Type: String
+    Description: S3 Version ID for the notes function code
+  UpdateNotesZipVersion: # NEW PARAMETER: Must match the key in version-ids.json
+    Type: String
+    Description: S3 Version ID for the update notes function code
 
 Resources:
 
@@ -26,6 +32,7 @@ Resources:
       Code:
         S3Bucket: !Ref ArtifactBucket
         S3Key: notes-function.zip
+        S3ObjectVersion: !Ref NotesZipVersion
   
   NotesFunctionPermission:
     Type: AWS::Lambda::Permission
@@ -50,6 +57,7 @@ Resources:
       Code:
         S3Bucket: !Ref ArtifactBucket
         S3Key: update-notes-function.zip
+        S3ObjectVersion: !Ref UpdateNotesZipVersion
 
   NotesUpdateFunctionPermission:
     Type: AWS::Lambda::Permission
