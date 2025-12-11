@@ -17,8 +17,11 @@ phases:
       - aws s3 ls s3://$ARTIFACT_BUCKET/update-notes-function.zip
       - aws s3 cp index.html s3://boris-notes-app/index.html --content-type "text/html"
       # Create a JSON file to pass the Version IDs to the CF stage
-      - export INNER_JSON="\"NotesZipVersion\":\"$NOTES_VERSION_ID\", \"UpdateNotesZipVersion\":\"$UPDATE_NOTES_VERSION_ID\""
-      - echo "{\"Parameters\": {${INNER_JSON}}}" > version-ids.json
+      - |
+        # Use simple double quotes for JSON strings inside the Bash command
+        export INNER_JSON="\"NotesZipVersion\":\"$NOTES_VERSION_ID\", \"UpdateNotesZipVersion\":\"$UPDATE_NOTES_VERSION_ID\""
+        # Create the FINAL JSON file, WRAPPED in "Parameters"
+        echo "{\"Parameters\": {${INNER_JSON}}}" > version-ids.json
       # checking version-ids file
       - cat version-ids.json
 
