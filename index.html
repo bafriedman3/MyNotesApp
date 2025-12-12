@@ -21,6 +21,7 @@
 <div id="noteContainer"></div>
 <button id="logoutBtn">Sign Out</button>
 <button id="newNote">Create Note</button>
+<div id="newNoteCtr"></div>
 </body>
 <script>
   // 1. Configure Amplify
@@ -194,8 +195,9 @@
 	newNoteSaveButton.textContent = "Save"
 	newNoteSaveButton.style.display = 'none';
 	newNoteField.style.display = "none"
-	document.appendChild(newNoteField)
-	document.appendChild(newNoteSaveButton)
+	const newNoteCtr = document.getElementById("newNoteCtr")
+	newNoteCtr.appendChild(newNoteField)
+	newNoteCtr.appendChild(newNoteSaveButton)
 	newNoteBtn.addEventListener("click", async () => {
 		console.log("new note button is pressed")
 		try {
