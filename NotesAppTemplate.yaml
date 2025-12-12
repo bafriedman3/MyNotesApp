@@ -75,3 +75,66 @@ Resources:
     Properties:
       Name: Notes API
       Description: Existing API Gateway for Notes app
+  
+  NotesResource:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        ParentId: !GetAtt NotesApiGateway.RootResourceId
+        PathPart: notes
+  
+  NotesGetMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        ResourceId: !Ref NotesResource
+        HttpMethod: GET
+        AuthorizationType: NONE
+        RequestParameters:
+            method.request.querystring.userId: false
+        MethodResponses:
+            - StatusCode: 200
+        ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+        Integration:
+          Type: AWS
+          IntegrationHttpMethod: POST
+          Uri:
+            Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NotesRetrieveLambdaFunction.Arn}/invocations
+          RequestParameters:
+            integration.request.querystring.userId: "method.request.querystring.userId"
+          IntegrationResponses:
+            - StatusCode: 200
+            ResponseParameters:
+                method.response.header.Access-Control-Allow-Origin: "'*'"
+          RequestTemplates:
+            application/json: |
+              {
+                "userId": "$input.params('userId')"
+              }
+          PassthroughBehavior: WHEN_NO_TEMPLATES
+  NotesOptionsMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        ResourceId: !Ref NotesResource
+        HttpMethod: OPTIONS
+        AuthorizationType: NONE
+        Integration:
+          Type: MOCK
+          RequestTemplates:
+            application/json: '{"statusCode": 200}'
+          IntegrationResponses:
+            - StatusCode: 200
+              ResponseParameters:
+                method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                method.response.header.Access-Control-Allow-Origin: "'*'"
+              ResponseTemplates:
+                application/json: '{}'
+        MethodResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: true
+              method.response.header.Access-Control-Allow-Methods: true
+              method.response.header.Access-Control-Allow-Origin: true
