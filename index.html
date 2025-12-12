@@ -39,6 +39,12 @@
     }
   });
   try {
+	  const url = new URL(window.location.href);
+
+	  // If Cognito redirected back from login, DO NOT logout
+	  if (url.searchParams.has("code")) {
+		return;
+	  }
 	  aws_amplify.Amplify.Auth.signOut({ global: false });
 	  // Redirect to Cognito Hosted UI logout to clear the session
 	  window.location.href =
