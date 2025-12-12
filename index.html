@@ -195,12 +195,13 @@
 	document.appendChild(newNoteField)
 	document.appendChild(newNoteSaveButton)
 	newNoteBtn.addEventListener("click", async () => {
+		console.log("new note button is pressed")
 		try {
 			newNoteSaveButton.style.display = 'inline';
 			newNoteField.style.display = "inline"
 		}
 		catch (err) {
-			console.error("Error signing out:", err);
+			console.error("Error creating new note: ", err);
 		}	
 	})		
 </script>
