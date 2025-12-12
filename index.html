@@ -212,6 +212,9 @@
 	newNoteSaveButton.addEventListener("click", async () => {
 		console.log("save new note is pressed")
 		try {
+			newNoteSaveButton.style.display = 'none';
+			newNoteField.style.display = "none"
+			newNoteField.value = ""
 			const notesDiv = document.getElementById("noteContainer");
 			const newParagraph = document.createElement('p');
 			newParagraph.setAttribute('id', "notePar"+(window.numNotes + 1))
@@ -228,11 +231,13 @@
 			newSpan.classList.add("editableText")
 			newParagraph.textContent = (window.numNotes + 1) + " "
 			newParagraph.appendChild(newSpan);
+			window.numNotes = window.numNotes + 1
 			newInputField.classList.add("editInput");
 			newSaveButton.classList.add("saveButton");
 			newParagraph.appendChild(newInputField);
 			newParagraph.appendChild(newSaveButton);
 			notesDiv.appendChild(newParagraph)
+			
 			newSpan.addEventListener('click', function() {
 				// 1. Set the input field's value to the current text
 				newInputField.value = newSpan.textContent;
