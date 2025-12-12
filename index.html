@@ -20,6 +20,7 @@
 <p id="notes"></p>
 <div id="noteContainer"></div>
 <button id="logoutBtn">Sign Out</button>
+<button id="newNote">Create Note</button>
 </body>
 <script>
   // 1. Configure Amplify
@@ -183,5 +184,24 @@
     console.error("Error signing out:", err);
   }
 });
+</script>
+<script>
+	const newNoteBtn = document.getElementById("newNote");
+	const newNoteField = document.createElement("textarea")
+	const newNoteSaveButton = document.createElement("button")
+	newNoteSaveButton.textContent = "Save"
+	newNoteSaveButton.style.display = 'none';
+	newNoteField.style.display = "none"
+	document.appendChild(newNoteField)
+	document.appendChild(newNoteSaveButton)
+	newNoteBtn.addEventListener("click", async () => {
+		try {
+			newNoteSaveButton.style.display = 'inline';
+			newNoteField.style.display = "inline"
+		}
+		catch (err) {
+			console.error("Error signing out:", err);
+		}	
+	})		
 </script>
 </html>
