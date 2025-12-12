@@ -38,8 +38,13 @@
       }
     }
   });
-  aws_amplify.Amplify.Auth.signOut({ global: false });
   try {
+	  aws_amplify.Amplify.Auth.signOut({ global: false });
+	  // Redirect to Cognito Hosted UI logout to clear the session
+	  window.location.href =
+      "https://us-east-1ghd8mrdi2.auth.us-east-1.amazoncognito.com/logout" +
+      "?client_id=29ufjq8g5t6k4pts2jjne0diab" +
+      "&logout_uri=https://boris-notes-app.s3.us-east-1.amazonaws.com/index.html";
       const user = await aws_amplify.Amplify.Auth.currentAuthenticatedUser();
       window.claims = user.signInUserSession.idToken.payload;
 
