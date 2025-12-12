@@ -42,16 +42,15 @@
 	  const url = new URL(window.location.href);
 
 	  // If Cognito redirected back from login, DO NOT logout
-	  if (url.searchParams.has("code")) {
-		return;
+	  if (!url.searchParams.has("code")) {
+		  aws_amplify.Amplify.Auth.signOut({ global: false });
+		  // Redirect to Cognito Hosted UI logout to clear the session
+		  window.location.href =
+		  "https://us-east-1ghd8mrdi2.auth.us-east-1.amazoncognito.com/logout" +
+		  "?client_id=29ufjq8g5t6k4pts2jjne0diab" +
+		  "&logout_uri=https://boris-notes-app.s3.us-east-1.amazonaws.com/index.html";
 	  }
-	  aws_amplify.Amplify.Auth.signOut({ global: false });
-	  // Redirect to Cognito Hosted UI logout to clear the session
-	  window.location.href =
-      "https://us-east-1ghd8mrdi2.auth.us-east-1.amazoncognito.com/logout" +
-      "?client_id=29ufjq8g5t6k4pts2jjne0diab" +
-      "&logout_uri=https://boris-notes-app.s3.us-east-1.amazonaws.com/index.html";
-      const user = await aws_amplify.Amplify.Auth.currentAuthenticatedUser();
+	  const user = await aws_amplify.Amplify.Auth.currentAuthenticatedUser();
       window.claims = user.signInUserSession.idToken.payload;
 
 	  console.log("User ID (sub):", window.claims.sub);
