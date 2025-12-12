@@ -214,12 +214,12 @@
 		try {
 			newNoteSaveButton.style.display = 'none';
 			newNoteField.style.display = "none"
-			newNoteField.value = ""
 			const notesDiv = document.getElementById("noteContainer");
 			const newParagraph = document.createElement('p');
 			newParagraph.setAttribute('id', "notePar"+(window.numNotes + 1))
 			const newSpan = document.createElement('span');
 			newSpan.textContent = newNoteField.value
+			newNoteField.value = ""
 			console.log("new span text content is " + newSpan)
 			newSpan.setAttribute('id', "noteSpan"+(window.numNotes + 1))
 			const newInputField = document.createElement("textarea")
