@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Notes App CF template
+Description: Notes App CF template with all resources
 
 Parameters:
   ArtifactBucket:
