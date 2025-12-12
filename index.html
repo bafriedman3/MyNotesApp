@@ -217,6 +217,7 @@
 			newParagraph.setAttribute('id', "notePar"+(window.numNotes + 1))
 			const newSpan = document.createElement('span');
 			newSpan.textContent = newNoteField.textContent
+			console.log("new span text content is " + newSpan)
 			newSpan.setAttribute('id', "noteSpan"+(window.numNotes + 1))
 			const newInputField = document.createElement("textarea")
 			newInputField.style.fieldSizing = 'content';
