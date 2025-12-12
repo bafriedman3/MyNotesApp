@@ -22,9 +22,6 @@
 <button id="logoutBtn">Sign Out</button>
 </body>
 <script>
-aws_amplify.Amplify.Auth.signOut({ global: true });
-</script>
-<script>
   // 1. Configure Amplify
   window.onload = async function() {
   aws_amplify.Amplify.configure({
@@ -41,6 +38,7 @@ aws_amplify.Amplify.Auth.signOut({ global: true });
       }
     }
   });
+  aws_amplify.Amplify.Auth.signOut({ global: false });
   try {
       const user = await aws_amplify.Amplify.Auth.currentAuthenticatedUser();
       window.claims = user.signInUserSession.idToken.payload;
