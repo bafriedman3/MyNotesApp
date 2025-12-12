@@ -170,6 +170,7 @@
 <script>
   const logoutBtn = document.getElementById("logoutBtn");
   logoutBtn.addEventListener("click", async () => {
+  console.log("log out is pressed")
   try {
     // Clear Amplify session locally
     await aws_amplify.Auth.signOut({ global: false }); // local only, avoids the NotAuthorizedException
@@ -187,6 +188,7 @@
 </script>
 <script>
 	const newNoteBtn = document.getElementById("newNote");
+	console.log("obtained new note btn")
 	const newNoteField = document.createElement("textarea")
 	const newNoteSaveButton = document.createElement("button")
 	newNoteSaveButton.textContent = "Save"
