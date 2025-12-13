@@ -73,7 +73,6 @@ Resources:
     Type: AWS::ApiGateway::RestApi
     DeletionPolicy: Retain
     Properties:
-      Name: Notes API
       Description: Existing API Gateway for Notes app
   
   NotesResource:
@@ -118,6 +117,104 @@ Resources:
       Properties:
         RestApiId: !Ref NotesApiGateway
         ResourceId: !Ref NotesResource
+        HttpMethod: OPTIONS
+        AuthorizationType: NONE
+        Integration:
+          Type: MOCK
+          RequestTemplates:
+            application/json: '{"statusCode": 200}'
+          IntegrationResponses:
+            - StatusCode: 200
+              ResponseParameters:
+                method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                method.response.header.Access-Control-Allow-Origin: "'*'"
+              ResponseTemplates:
+                application/json: '{}'
+        MethodResponses:
+          - StatusCode: 200
+            ResponseParameters:
+                method.response.header.Access-Control-Allow-Headers: true
+                method.response.header.Access-Control-Allow-Methods: true
+                method.response.header.Access-Control-Allow-Origin: true
+  UpdateNotesResource:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        ParentId: !Ref NotesResource
+        PathPart: update
+        
+  UpdateNoteRequestModel:
+  Type: AWS::ApiGateway::Model
+  Properties:
+    RestApiId: !Ref NotesApiGateway
+    Name: UpdateNoteRequest
+    ContentType: application/json
+    Description: Schema for the request body to update an existing note
+    Schema:
+      # --- Start of JSON Schema ---
+      $schema: http://json-schema.org/draft-04/schema#
+      title: Update Note Request
+      type: object
+      properties:
+        userId:
+          type: string
+        noteId:
+          # Note: The type is an array in JSON Schema to allow either string or number
+          type:
+            - string
+            - number
+        content:
+          type: string
+      required:
+        - userId
+        - noteId
+        - content
+      # --- End of JSON Schema ---
+  
+  BodyValidator:
+  Type: AWS::ApiGateway::RequestValidator
+  Properties:
+    RestApiId: !Ref NotesApiGateway # Links the validator to your existing API Gateway
+    Name: BodyValidator           # A descriptive name for the validator
+    ValidateRequestBody: true     # <-- Sets validation for the request body (required for your model)
+    ValidateRequestParameters: false  # Set this to false if you are NOT validating headers or query parameters
+    
+  UpdateNotesPostMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        ResourceId: !Ref UpdateNotesResource
+        HttpMethod: POST
+        AuthorizationType: NONE
+        RequestModels:
+            application/json: !Ref UpdateNoteRequestModel
+        RequestValidatorId: !Ref BodyValidator
+        MethodResponses:
+          - StatusCode: 200
+            ResponseParameters:
+                method.response.header.Access-Control-Allow-Headers: true
+                method.response.header.Access-Control-Allow-Methods: true
+                method.response.header.Access-Control-Allow-Origin: true
+        Integration:
+          Type: AWS
+          IntegrationHttpMethod: POST
+          Uri:
+            Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NotesUpdateLambdaFunction.Arn}/invocations
+          PassthroughBehavior: WHEN_NO_TEMPLATES
+          RequestTemplates:
+            application/json: "$input.json('$')"
+          IntegrationResponses:
+            - StatusCode: 200
+              ResponseParameters:
+                method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                method.response.header.Access-Control-Allow-Origin: "'*'"
+  UpdateNotesOptionsMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        ResourceId: !Ref UpdateNotesResource
         HttpMethod: OPTIONS
         AuthorizationType: NONE
         Integration:
