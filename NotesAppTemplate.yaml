@@ -152,30 +152,30 @@ Resources:
     ContentType: application/json
     Description: Schema for the request body to update an existing note
     UpdateNoteRequestModel:
-  Type: AWS::ApiGateway::Model
-  Properties:
-    RestApiId: !Ref NotesApiGateway
-    Name: UpdateNoteRequest
-    ContentType: application/json
-    Description: Schema for the request body to update an existing note
-    Schema: |
-      {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "title": "Update Note Request",
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string"
-          },
-          "noteId": {
-            "type": ["string", "number"]
-          },
-          "content": {
-            "type": "string"
+      Type: AWS::ApiGateway::Model
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        Name: UpdateNoteRequest
+        ContentType: application/json
+        Description: Schema for the request body to update an existing note
+        Schema: |
+          {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "title": "Update Note Request",
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string"
+              },
+              "noteId": {
+                "type": ["string", "number"]
+              },
+              "content": {
+                "type": "string"
+              }
+            },
+            "required": ["userId", "noteId", "content"]
           }
-        },
-        "required": ["userId", "noteId", "content"]
-      }
   
   BodyValidator:
   Type: AWS::ApiGateway::RequestValidator
