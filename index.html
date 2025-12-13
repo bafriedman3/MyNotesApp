@@ -69,7 +69,7 @@
 		console.log("inside function")
 		const userName = window.claims["cognito:username"]
 		console.log("in main user name is " + userName) 
-		const response = await fetch('https://jtjdqzd1qa.execute-api.us-east-1.amazonaws.com/dev/notes?userId=' + userName);
+		const response = await fetch('https://vme3u2sh93.execute-api.us-east-1.amazonaws.com/dev/notes?userId=' + userName);
 		const myJson = await response.json(); //extract JSON from the http response
 		// do something with myJson
 		console.log(myJson)
@@ -111,7 +111,7 @@
 				newSaveButton.style.display = 'none';
 
 				// NOTE: If you were connecting to a database, the save logic goes here!
-				const apiUrl = 'https://jtjdqzd1qa.execute-api.us-east-1.amazonaws.com/dev/notes/update';
+				const apiUrl = 'https://vme3u2sh93.execute-api.us-east-1.amazonaws.com/dev/notes/update';
 				const postData = {
 					userId: data[i].userId,
 					noteId: data[i].noteId,
