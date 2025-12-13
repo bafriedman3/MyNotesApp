@@ -40,7 +40,7 @@ Resources:
       FunctionName: !Ref NotesRetrieveLambdaFunction
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: arn:aws:execute-api:us-east-1:714163356458:jtjdqzd1qa/*/GET/notes
+      SourceArn: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApiId}/*/GET/notes
   
   # Lambda function
   NotesUpdateLambdaFunction:
@@ -65,7 +65,7 @@ Resources:
       FunctionName: !Ref NotesUpdateLambdaFunction
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: arn:aws:execute-api:us-east-1:714163356458:jtjdqzd1qa/*/POST/notes/update
+      SourceArn: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApiId}/*/POST/notes/update
 
   
   # API Gateway
