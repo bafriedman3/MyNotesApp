@@ -108,14 +108,15 @@ Resources:
                 method.response.header.Access-Control-Allow-Origin: "'*'"
                 method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
                 method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              ResponseTemplates:
+                application/json: ""
           RequestTemplates:
             application/json: |
               {
                 "userId": "$input.params('userId')"
               }
           PassthroughBehavior: WHEN_NO_TEMPLATES
-          ResponseTemplates:
-            application/json: ""
+          
   NotesOptionsMethod:
       Type: AWS::ApiGateway::Method
       Properties:
