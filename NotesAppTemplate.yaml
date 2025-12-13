@@ -216,3 +216,19 @@ Resources:
                 method.response.header.Access-Control-Allow-Headers: true
                 method.response.header.Access-Control-Allow-Methods: true
                 method.response.header.Access-Control-Allow-Origin: true
+  ApiDeployment:
+      Type: AWS::ApiGateway::Deployment
+      DependsOn:
+        - NotesGetMethod
+        - UpdateNotesPostMethod
+        - NotesOptionsMethod
+        - UpdateNotesOptionsMethod
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        Description: Deployment triggered by CloudFormation update
+  DevStage:
+      Type: AWS::ApiGateway::Stage
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        StageName: dev
+        DeploymentId: !Ref ApiDeployment
