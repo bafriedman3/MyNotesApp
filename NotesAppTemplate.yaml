@@ -130,10 +130,10 @@ Resources:
   
   # API Gateway
   NotesApiGatewayV2:
-    Name: 'Notes API V2'
     Type: AWS::ApiGateway::RestApi
     DeletionPolicy: Retain
     Properties:
+      Name: 'Notes API V2'
       Description: Existing API Gateway for Notes app
       EndpointConfiguration: # Set the API Gateway type to Regional
         Types:
