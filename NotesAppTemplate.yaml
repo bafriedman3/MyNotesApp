@@ -124,6 +124,9 @@ Resources:
     DeletionPolicy: Retain
     Properties:
       Description: Existing API Gateway for Notes app
+      EndpointConfiguration: # Set the API Gateway type to Regional
+        Types:
+            - REGIONAL
   
   NotesResource:
       Type: AWS::ApiGateway::Resource
