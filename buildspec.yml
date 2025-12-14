@@ -8,15 +8,16 @@ phases:
       - cd lambda/update-notes-function && zip -r ../../update-notes-function.zip . && cd ../..
       - cd lambda/insert-notes-function && zip -r ../../insert-notes-function.zip . && cd ../..
       - echo "Uploading notes-function.zip and capturing VersionId"
-      #- aws s3 cp notes-function.zip s3://$ARTIFACT_BUCKET/notes-function.zip --sse aws:kms
+      - aws s3 cp notes-function.zip s3://$ARTIFACT_BUCKET/notes-function.zip --sse aws:kms
       - export NOTES_VERSION_ID=$(aws s3api head-object --bucket $ARTIFACT_BUCKET --key notes-function.zip --query VersionId --output text)
       - echo "Uploading update-notes-function.zip and capturing VersionId"
-      #- aws s3 cp update-notes-function.zip s3://$ARTIFACT_BUCKET/update-notes-function.zip --sse aws:kms
+      - aws s3 cp update-notes-function.zip s3://$ARTIFACT_BUCKET/update-notes-function.zip --sse aws:kms
       - export UPDATE_NOTES_VERSION_ID=$(aws s3api head-object --bucket $ARTIFACT_BUCKET --key update-notes-function.zip --query VersionId --output text)
       #- echo "Checking uploaded files"
       #- aws s3 ls s3://$ARTIFACT_BUCKET/notes-function.zip
       #- aws s3 ls s3://$ARTIFACT_BUCKET/update-notes-function.zip
       - echo "Uploading insert-notes-function.zip and capturing VersionId"
+      - aws s3 cp insert-notes-function.zip s3://$ARTIFACT_BUCKET/insert-notes-function.zip --sse aws:kms
       - export INSERT_NOTES_VERSION_ID=$(aws s3api head-object --bucket $ARTIFACT_BUCKET --key insert-notes-function.zip --query VersionId --output text)
       - aws s3 cp index.html s3://boris-notes-app/index.html --content-type "text/html"
       # Create a JSON file to pass the Version IDs to the CF stage
