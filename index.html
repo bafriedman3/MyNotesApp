@@ -215,7 +215,7 @@
 			// save the note into the database 
 			const apiUrl = 'https://vme3u2sh93.execute-api.us-east-1.amazonaws.com/dev/notes/insert';
 			const postData = {
-				userId: data[i].userId,
+				userId: window.claims["cognito:username"],
 				noteId: window.numNotes + 1,
 				content: newNoteField.value
 			};
