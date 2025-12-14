@@ -201,11 +201,11 @@ Resources:
         ParentId: !Ref NotesResource
         PathPart: update
         
-  UpdateNoteRequestModel:
+  UserNotesModel:
       Type: AWS::ApiGateway::Model
       Properties:
         RestApiId: !Ref NotesApiGateway
-        Name: UpdateNoteRequest
+        Name: UserNotes
         ContentType: application/json
         Description: Schema for the request body to update an existing note
         Schema: '{"$schema": "http://json-schema.org/draft-04/schema#", "title": "Update Note Request", "type": "object", "properties": {"userId": {"type": "string"}, "noteId": {"type": ["string", "number"]}, "content": {"type": "string"}}, "required": ["userId", "noteId", "content"]}'
@@ -226,7 +226,7 @@ Resources:
         HttpMethod: POST
         AuthorizationType: NONE
         RequestModels:
-            application/json: !Ref UpdateNoteRequestModel
+            application/json: !Ref UserNotesModel
         RequestValidatorId: !Ref BodyValidator
         MethodResponses:
           - StatusCode: 200
@@ -246,7 +246,7 @@ Resources:
             - StatusCode: 200
               ResponseParameters:
                 method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-                method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
                 method.response.header.Access-Control-Allow-Origin: "'*'"
   UpdateNotesOptionsMethod:
       Type: AWS::ApiGateway::Method
@@ -263,7 +263,69 @@ Resources:
             - StatusCode: 200
               ResponseParameters:
                 method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-                method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
+                method.response.header.Access-Control-Allow-Origin: "'*'"
+              ResponseTemplates:
+                application/json: '{}'
+        MethodResponses:
+          - StatusCode: 200
+            ResponseParameters:
+                method.response.header.Access-Control-Allow-Headers: true
+                method.response.header.Access-Control-Allow-Methods: true
+                method.response.header.Access-Control-Allow-Origin: true
+  InsertNotesResource:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        ParentId: !Ref NotesResource
+        PathPart: insert
+        
+  InsertNotesPostMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        ResourceId: !Ref InsertNotesResource
+        HttpMethod: POST
+        AuthorizationType: NONE
+        RequestModels:
+            application/json: !Ref UserNotesModel
+        RequestValidatorId: !Ref BodyValidator
+        MethodResponses:
+          - StatusCode: 200
+            ResponseParameters:
+                method.response.header.Access-Control-Allow-Headers: true
+                method.response.header.Access-Control-Allow-Methods: true
+                method.response.header.Access-Control-Allow-Origin: true
+        Integration:
+          Type: AWS
+          IntegrationHttpMethod: POST
+          Uri:
+            Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NotesInsertLambdaFunction.Arn}/invocations
+          PassthroughBehavior: WHEN_NO_TEMPLATES
+          RequestTemplates:
+            application/json: "$input.json('$')"
+          IntegrationResponses:
+            - StatusCode: 200
+              ResponseParameters:
+                method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
+                method.response.header.Access-Control-Allow-Origin: "'*'"
+  InsertNotesOptionsMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        RestApiId: !Ref NotesApiGateway
+        ResourceId: !Ref InsertNotesResource
+        HttpMethod: OPTIONS
+        AuthorizationType: NONE
+        Integration:
+          Type: MOCK
+          RequestTemplates:
+            application/json: '{"statusCode": 200}'
+          IntegrationResponses:
+            - StatusCode: 200
+              ResponseParameters:
+                method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
                 method.response.header.Access-Control-Allow-Origin: "'*'"
               ResponseTemplates:
                 application/json: '{}'
