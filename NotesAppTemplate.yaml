@@ -346,7 +346,7 @@ Resources:
         - InsertNotesOptionsMethod
       Properties:
         RestApiId: !Ref NotesApiGateway
-        Description: Deployment triggered by CloudFormation update
+        Description: !Sub "Deployment for ${AWS::StackName} at ${AWS::CurrentTime}"
   DevStage:
       Type: AWS::ApiGateway::Stage
       Properties:
