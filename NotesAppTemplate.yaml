@@ -25,6 +25,7 @@ Resources:
     Type: AWS::Lambda::Function
     DeletionPolicy: Retain
     Properties:
+      Timeout: 30
       FunctionName: notes-function
       Handler: lambda_function.lambda_handler  # update if different
       Runtime: python3.14  # adjust to your runtime
@@ -52,6 +53,7 @@ Resources:
     Type: AWS::Lambda::Function
     DeletionPolicy: Retain
     Properties:
+      Timeout: 30
       FunctionName: update-notes-function
       Handler: lambda_function.lambda_handler  # update if different
       Runtime: python3.14  # adjust to your runtime
@@ -79,6 +81,7 @@ Resources:
     Type: AWS::Lambda::Function
     DeletionPolicy: Retain
     Properties:
+      Timeout: 30
       FunctionName: insert-notes-function
       Handler: lambda_function.lambda_handler
       Runtime: python3.14  # adjust to your runtime
