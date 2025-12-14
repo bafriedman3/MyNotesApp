@@ -93,7 +93,15 @@ Resources:
 
   InsertNoteFunctionRole:
       Type: AWS::IAM::Role
-      Properties:      
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                # This is the Lambda Service Principal
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole         
         Policies:
