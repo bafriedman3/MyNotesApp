@@ -45,7 +45,7 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub
         - arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApiId}/*/GET/notes
-        - RestApiId: !Ref NotesApiGateway
+        - RestApiId: !Ref NotesApiGatewayV2
         
   # Lambda function
   NotesUpdateLambdaFunction:
@@ -72,7 +72,7 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub
         - arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApiId}/*/POST/notes/update
-        - RestApiId: !Ref NotesApiGateway
+        - RestApiId: !Ref NotesApiGatewayV2
   
   # Lambda function
   NotesInsertLambdaFunction:
@@ -99,7 +99,7 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub
         - arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApiId}/*/POST/notes/insert
-        - RestApiId: !Ref NotesApiGateway
+        - RestApiId: !Ref NotesApiGatewayV2
         
   InsertNoteFunctionRole:
       Type: AWS::IAM::Role
@@ -129,7 +129,7 @@ Resources:
                       - TableName: UserNotes # <-- The actual, literal name of your DynamoDB table 
   
   # API Gateway
-  NotesApiGateway:
+  NotesApiGatewayV2:
     Type: AWS::ApiGateway::RestApi
     DeletionPolicy: Retain
     Properties:
@@ -141,14 +141,14 @@ Resources:
   NotesResource:
       Type: AWS::ApiGateway::Resource
       Properties:
-        RestApiId: !Ref NotesApiGateway
-        ParentId: !GetAtt NotesApiGateway.RootResourceId
+        RestApiId: !Ref NotesApiGatewayV2
+        ParentId: !GetAtt NotesApiGatewayV2.RootResourceId
         PathPart: notes
   
   NotesGetMethod:
       Type: AWS::ApiGateway::Method
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         ResourceId: !Ref NotesResource
         HttpMethod: GET
         AuthorizationType: NONE
@@ -185,7 +185,7 @@ Resources:
   NotesOptionsMethod:
       Type: AWS::ApiGateway::Method
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         ResourceId: !Ref NotesResource
         HttpMethod: OPTIONS
         AuthorizationType: NONE
@@ -210,14 +210,14 @@ Resources:
   UpdateNotesResource:
       Type: AWS::ApiGateway::Resource
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         ParentId: !Ref NotesResource
         PathPart: update
         
   UserNotesModel:
       Type: AWS::ApiGateway::Model
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         Name: UserNotes
         ContentType: application/json
         Description: Schema for the request body to update an existing note
@@ -226,7 +226,7 @@ Resources:
   BodyValidator:
       Type: AWS::ApiGateway::RequestValidator
       Properties:
-        RestApiId: !Ref NotesApiGateway # Links the validator to your existing API Gateway
+        RestApiId: !Ref NotesApiGatewayV2 # Links the validator to your existing API Gateway
         Name: BodyValidator           # A descriptive name for the validator
         ValidateRequestBody: true     # <-- Sets validation for the request body (required for your model)
         ValidateRequestParameters: false  # Set this to false if you are NOT validating headers or query parameters
@@ -234,7 +234,7 @@ Resources:
   UpdateNotesPostMethod:
       Type: AWS::ApiGateway::Method
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         ResourceId: !Ref UpdateNotesResource
         HttpMethod: POST
         AuthorizationType: NONE
@@ -264,7 +264,7 @@ Resources:
   UpdateNotesOptionsMethod:
       Type: AWS::ApiGateway::Method
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         ResourceId: !Ref UpdateNotesResource
         HttpMethod: OPTIONS
         AuthorizationType: NONE
@@ -289,14 +289,14 @@ Resources:
   InsertNotesResource:
       Type: AWS::ApiGateway::Resource
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         ParentId: !Ref NotesResource
         PathPart: insert
         
   InsertNotesPostMethod:
       Type: AWS::ApiGateway::Method
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         ResourceId: !Ref InsertNotesResource
         HttpMethod: POST
         AuthorizationType: NONE
@@ -326,7 +326,7 @@ Resources:
   InsertNotesOptionsMethod:
       Type: AWS::ApiGateway::Method
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         ResourceId: !Ref InsertNotesResource
         HttpMethod: OPTIONS
         AuthorizationType: NONE
@@ -358,11 +358,11 @@ Resources:
         - UpdateNotesOptionsMethod
         - InsertNotesOptionsMethod
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         Description: !Sub "Deployment for commit ${CodePipelineRevision}"
   DevStage:
       Type: AWS::ApiGateway::Stage
       Properties:
-        RestApiId: !Ref NotesApiGateway
+        RestApiId: !Ref NotesApiGatewayV2
         StageName: dev
         DeploymentId: !Ref ApiDeployment
