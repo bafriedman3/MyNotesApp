@@ -130,6 +130,7 @@ Resources:
   
   # API Gateway
   NotesApiGatewayV2:
+    Name: 'Notes API V2'
     Type: AWS::ApiGateway::RestApi
     DeletionPolicy: Retain
     Properties:
