@@ -212,6 +212,46 @@
 	newNoteSaveButton.addEventListener("click", async () => {
 		console.log("save new note is pressed")
 		try {
+			// save the note into the database 
+			const apiUrl = 'https://vme3u2sh93.execute-api.us-east-1.amazonaws.com/dev/notes/insert';
+			const postData = {
+				userId: data[i].userId,
+				noteId: window.numNotes + 1,
+				content: newNoteField.value
+			};
+
+			fetch(apiUrl, {
+				// 1. Specify the method
+				method: 'POST', 
+				
+				// 2. Set the headers (crucial for sending JSON)
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				
+				// 3. Convert the JavaScript object to a JSON string for the body
+				body: JSON.stringify(postData) 
+			})
+			.then(response => {
+				// Check if the request was successful (status 200-299)
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				// Parse the JSON body from the response
+				console.log('Success:', response);
+				return response.json()
+			})
+			.then(data => {
+				console.log("Parsed response JSON:", data);
+
+				// Now you can access your fields:
+				console.log("statusCode:", data.statusCode);
+				console.log("body:", data.body);
+			})
+			.catch(error => {
+				// Handle any errors during the fetch or promise chain
+				console.error('Error sending POST request:', error);
+			});
 			newNoteSaveButton.style.display = 'none';
 			newNoteField.style.display = "none"
 			const notesDiv = document.getElementById("noteContainer");
