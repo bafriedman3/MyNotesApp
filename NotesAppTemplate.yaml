@@ -346,7 +346,7 @@ Resources:
         - InsertNotesOptionsMethod
       Properties:
         RestApiId: !Ref NotesApiGateway
-        Description: !Sub "Deployment for ${AWS::StackName} at ${AWS::CurrentTime}"
+        Description: !Sub "Deployment for commit ${CodePipelineRevision}"
   DevStage:
       Type: AWS::ApiGateway::Stage
       Properties:
