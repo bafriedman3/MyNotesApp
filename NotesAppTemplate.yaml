@@ -90,7 +90,17 @@ Resources:
         S3Bucket: !Ref ArtifactBucket
         S3Key: insert-notes-function.zip
         S3ObjectVersion: !Ref InsertNotesZipVersion
-
+        
+  NotesInsertFunctionPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref NotesInsertLambdaFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub
+        - arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApiId}/*/POST/notes/insert
+        - RestApiId: !Ref NotesApiGateway
+        
   InsertNoteFunctionRole:
       Type: AWS::IAM::Role
       Properties:
