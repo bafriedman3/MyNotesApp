@@ -1,5 +1,6 @@
 import json
 import boto3
+import time
 
 # This function updates the notes with the new content
 # updating the corresponding note in the dynamodb table
@@ -11,6 +12,7 @@ def lambda_handler(event, context):
     user_id = event['userId']
     note_id = int(event['noteId'])
     note_content = event['content']
+    current_timestamp = time.time()
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('UserNotes')
 
@@ -18,7 +20,8 @@ def lambda_handler(event, context):
         item = {
             'userId': user_id,
             'noteId': note_id,
-            'content': note_content
+            'content': note_content,
+            'updated_ts': current_timestamp
         }
         response = table.put_item(
             Item=item
