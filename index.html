@@ -73,6 +73,7 @@
 		const myJson = await response.json(); //extract JSON from the http response
 		// do something with myJson
 		console.log(myJson)
+		window.numNotes = 0
 		if(myJson.statusCode != 404) {
 			const data = JSON.parse(myJson.body)
 			window.numNotes = data.length
