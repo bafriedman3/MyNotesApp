@@ -73,95 +73,97 @@
 		const myJson = await response.json(); //extract JSON from the http response
 		// do something with myJson
 		console.log(myJson)
-		const data = JSON.parse(myJson.body)
-		window.numNotes = data.length
-		console.log("userId: " + data[0].userId + " noteId: " + data[0].noteId)
-		for(let i=0; i<data.length; i++) {
-			const newParagraph = document.createElement('p');
-			newParagraph.setAttribute('id', "notePar"+i)
-			const newSpan = document.createElement('span');
-			const newInputField = document.createElement("textarea")
-			newInputField.style.fieldSizing = 'content';
-			const newSaveButton = document.createElement("button")
-			newSaveButton.textContent = "Save"
-			newInputField.style.display = 'none';
-			newSaveButton.style.display = 'none';
-			newSpan.addEventListener('click', function() {
-				// 1. Set the input field's value to the current text
-				newInputField.value = newSpan.textContent;
-				
-				// 2. Hide the span and show the input field and button
-				newSpan.style.display = 'none';
-				newInputField.style.display = 'inline-block';
-				newSaveButton.style.display = 'inline-block';
-				
-				// 3. Automatically focus on the input field
-				newInputField.focus();
-			});
-			newSaveButton.addEventListener('click', function() {
-				// 1. Get the new value
-				const newText = newInputField.value;
-				
-				// 2. Update the visible text
-				newSpan.textContent = newText;
-				
-				// 3. Hide the input field and button, and show the text span again
-				newSpan.style.display = 'inline';
+		if(myJson.statusCode != 404) {
+			const data = JSON.parse(myJson.body)
+			window.numNotes = data.length
+			console.log("userId: " + data[0].userId + " noteId: " + data[0].noteId)
+			for(let i=0; i<data.length; i++) {
+				const newParagraph = document.createElement('p');
+				newParagraph.setAttribute('id', "notePar"+i)
+				const newSpan = document.createElement('span');
+				const newInputField = document.createElement("textarea")
+				newInputField.style.fieldSizing = 'content';
+				const newSaveButton = document.createElement("button")
+				newSaveButton.textContent = "Save"
 				newInputField.style.display = 'none';
 				newSaveButton.style.display = 'none';
-
-				// NOTE: If you were connecting to a database, the save logic goes here!
-				const apiUrl = 'https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes/update';
-				const postData = {
-					userId: data[i].userId,
-					noteId: data[i].noteId,
-					content: newText
-				};
-
-				fetch(apiUrl, {
-					// 1. Specify the method
-					method: 'POST', 
+				newSpan.addEventListener('click', function() {
+					// 1. Set the input field's value to the current text
+					newInputField.value = newSpan.textContent;
 					
-					// 2. Set the headers (crucial for sending JSON)
-					headers: {
-						'Content-Type': 'application/json',
-					},
+					// 2. Hide the span and show the input field and button
+					newSpan.style.display = 'none';
+					newInputField.style.display = 'inline-block';
+					newSaveButton.style.display = 'inline-block';
 					
-					// 3. Convert the JavaScript object to a JSON string for the body
-					body: JSON.stringify(postData) 
-				})
-				.then(response => {
-					// Check if the request was successful (status 200-299)
-					if (!response.ok) {
-						throw new Error(`HTTP error! status: ${response.status}`);
-					}
-					// Parse the JSON body from the response
-					console.log('Success:', response);
-					return response.json()
-				})
-				.then(data => {
-					console.log("Parsed response JSON:", data);
-
-					// Now you can access your fields:
-					console.log("statusCode:", data.statusCode);
-					console.log("body:", data.body);
-				})
-				.catch(error => {
-					// Handle any errors during the fetch or promise chain
-					console.error('Error sending POST request:', error);
+					// 3. Automatically focus on the input field
+					newInputField.focus();
 				});
-			});
-			newSpan.setAttribute('id', "noteSpan"+i)
-			newSpan.textContent = data[i].content
-			newSpan.classList.add("editableText")
-			newParagraph.textContent = data[i].noteId + " "
-			newParagraph.appendChild(newSpan);
-			newInputField.classList.add("editInput");
-			newSaveButton.classList.add("saveButton");
-			newParagraph.appendChild(newInputField);
-			newParagraph.appendChild(newSaveButton);
-			document.getElementById("noteContainer").appendChild(newParagraph)
-		}
+				newSaveButton.addEventListener('click', function() {
+					// 1. Get the new value
+					const newText = newInputField.value;
+					
+					// 2. Update the visible text
+					newSpan.textContent = newText;
+					
+					// 3. Hide the input field and button, and show the text span again
+					newSpan.style.display = 'inline';
+					newInputField.style.display = 'none';
+					newSaveButton.style.display = 'none';
+
+					// NOTE: If you were connecting to a database, the save logic goes here!
+					const apiUrl = 'https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes/update';
+					const postData = {
+						userId: data[i].userId,
+						noteId: data[i].noteId,
+						content: newText
+					};
+
+					fetch(apiUrl, {
+						// 1. Specify the method
+						method: 'POST', 
+						
+						// 2. Set the headers (crucial for sending JSON)
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						
+						// 3. Convert the JavaScript object to a JSON string for the body
+						body: JSON.stringify(postData) 
+					})
+					.then(response => {
+						// Check if the request was successful (status 200-299)
+						if (!response.ok) {
+							throw new Error(`HTTP error! status: ${response.status}`);
+						}
+						// Parse the JSON body from the response
+						console.log('Success:', response);
+						return response.json()
+					})
+					.then(data => {
+						console.log("Parsed response JSON:", data);
+
+						// Now you can access your fields:
+						console.log("statusCode:", data.statusCode);
+						console.log("body:", data.body);
+					})
+					.catch(error => {
+						// Handle any errors during the fetch or promise chain
+						console.error('Error sending POST request:', error);
+					});
+				});
+				newSpan.setAttribute('id', "noteSpan"+i)
+				newSpan.textContent = data[i].content
+				newSpan.classList.add("editableText")
+				newParagraph.textContent = data[i].noteId + " "
+				newParagraph.appendChild(newSpan);
+				newInputField.classList.add("editInput");
+				newSaveButton.classList.add("saveButton");
+				newParagraph.appendChild(newInputField);
+				newParagraph.appendChild(newSaveButton);
+				document.getElementById("noteContainer").appendChild(newParagraph)
+			}
+		  }
 	  }
 	  userAction()
 	  } catch (err) {
