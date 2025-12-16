@@ -392,6 +392,10 @@ Resources:
         - NotesOptionsMethod
         - UpdateNotesOptionsMethod
         - InsertNotesOptionsMethod
+        - UserNotesModel
+        - UserNotesInsertModel
+        - GatewayResponseDefault4XX
+        - GatewayResponseDefault5XX
       Properties:
         RestApiId: !Ref NotesApiGatewayV2
         Description: !Sub "Deployment for commit ${CodePipelineRevision}"

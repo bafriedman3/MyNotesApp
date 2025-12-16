@@ -91,7 +91,7 @@
 				newTitleField.style.display = 'none';
 				newInputField.style.display = 'none';
 				newSaveButton.style.display = 'none';
-				newSpan.addEventListener('click', function() {
+				titleSpan.addEventListener('click', function() {
 					// 1. Set the input field's value to the current text
 					newInputField.value = newSpan.textContent;
 					
@@ -110,7 +110,7 @@
 					const newTitleText = newTitleField.value;
 					
 					// 2. Update the visible text
-					titleSpan.textContent = newTitleText
+					titleSpan.textContent = newTitleText + " "
 					newSpan.textContent = newText;
 					
 					// 3. Hide the input field and button, and show the text span again
@@ -164,7 +164,6 @@
 				});
 				newSpan.setAttribute('id', "noteSpan"+i)
 				newSpan.textContent = data[i].content
-				newSpan.classList.add("editableText")
 				title=""
 				if(data[i].title) {
 					title = data[i].title
@@ -173,6 +172,7 @@
 					title = "Text note " + data[i].updated_ts
 				}
 				titleSpan.textContent = title
+				titleSpan.classList.add("editableText")
 				newParagraph.appendChild(titleSpan);
 				newParagraph.appendChild(newSpan);
 				newInputField.classList.add("editInput");
@@ -284,10 +284,11 @@
 			const newParagraph = document.createElement('p');
 			newParagraph.setAttribute('id', "notePar"+(window.numNotes + 1))
 			const newTitleSpan = document.createElement('span');
-			newTitleSpan.textContent = newNoteTitle.value
+			newTitleSpan.textContent = newNoteTitle.value + " "
 			const newSpan = document.createElement('span');
 			newSpan.textContent = newNoteField.value
 			newNoteField.value = ""
+			newNoteTitle.value = ""
 			console.log("new span text content is " + newSpan.textContent)
 			newSpan.setAttribute('id', "noteSpan"+(window.numNotes + 1))
 			const newInputTitle = document.createElement("textarea")
@@ -299,8 +300,7 @@
 			newInputField.style.display = 'none';
 			newInputTitle.style.display = 'none';
 			newSaveButton.style.display = 'none';
-			newSpan.classList.add("editableText")
-			newParagraph.textContent = (window.numNotes + 1) + " "
+			newTitleSpan.classList.add("editableText")
 			newParagraph.appendChild(newTitleSpan);
 			newParagraph.appendChild(newSpan);
 			window.numNotes = window.numNotes + 1
@@ -310,7 +310,7 @@
 			newParagraph.appendChild(newSaveButton);
 			notesDiv.appendChild(newParagraph)
 			
-			newSpan.addEventListener('click', function() {
+			newTitleSpan.addEventListener('click', function() {
 				// 1. Set the input field's value to the current text
 				newInputField.value = newSpan.textContent;
 				
