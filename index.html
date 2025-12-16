@@ -77,15 +77,18 @@
 		if(myJson.statusCode != 404) {
 			const data = JSON.parse(myJson.body)
 			window.numNotes = data.length
-			console.log("userId: " + data[0].userId + " noteId: " + data[0].noteId)
 			for(let i=0; i<data.length; i++) {
 				const newParagraph = document.createElement('p');
 				newParagraph.setAttribute('id', "notePar"+i)
 				const newSpan = document.createElement('span');
+				const titleSpan = document.createElement('span');
+				const newTitleField = document.createElement("textarea")
+				newTitleField.style.fieldSizing = 'content';
 				const newInputField = document.createElement("textarea")
 				newInputField.style.fieldSizing = 'content';
 				const newSaveButton = document.createElement("button")
 				newSaveButton.textContent = "Save"
+				newTitleField.style.display = 'none';
 				newInputField.style.display = 'none';
 				newSaveButton.style.display = 'none';
 				newSpan.addEventListener('click', function() {
@@ -94,20 +97,24 @@
 					
 					// 2. Hide the span and show the input field and button
 					newSpan.style.display = 'none';
+					newTitleField.style.display = 'inline-block';
 					newInputField.style.display = 'inline-block';
 					newSaveButton.style.display = 'inline-block';
 					
 					// 3. Automatically focus on the input field
-					newInputField.focus();
+					newTitleField.focus();
 				});
 				newSaveButton.addEventListener('click', function() {
 					// 1. Get the new value
 					const newText = newInputField.value;
+					const newTitleText = newTitleField.value;
 					
 					// 2. Update the visible text
+					titleSpan.textContent = newTitleText
 					newSpan.textContent = newText;
 					
 					// 3. Hide the input field and button, and show the text span again
+					newTitle.style.display = 'inline';
 					newSpan.style.display = 'inline';
 					newInputField.style.display = 'none';
 					newSaveButton.style.display = 'none';
@@ -117,6 +124,7 @@
 					const postData = {
 						userId: data[i].userId,
 						noteId: data[i].noteId,
+						title: newTitleText,
 						content: newText
 					};
 
@@ -156,10 +164,19 @@
 				newSpan.setAttribute('id', "noteSpan"+i)
 				newSpan.textContent = data[i].content
 				newSpan.classList.add("editableText")
-				newParagraph.textContent = data[i].noteId + " "
+				title=""
+				if(data[i].title) {
+					title = data[i].title
+				}
+				else {
+					title = "Text note " + data[i].updated_ts
+				}
+				titleSpan.textContent = title
+				newParagraph.appendChild(titleSpan);
 				newParagraph.appendChild(newSpan);
 				newInputField.classList.add("editInput");
 				newSaveButton.classList.add("saveButton");
+				newParagraph.appendChild(newTitleField);
 				newParagraph.appendChild(newInputField);
 				newParagraph.appendChild(newSaveButton);
 				document.getElementById("noteContainer").appendChild(newParagraph)
@@ -195,17 +212,21 @@
 	const newNoteBtn = document.getElementById("newNote");
 	console.log("obtained new note btn")
 	const newNoteField = document.createElement("textarea")
+	const newNodeTitle = document.createElement("textarea")
 	const newNoteSaveButton = document.createElement("button")
 	newNoteSaveButton.textContent = "Save"
 	newNoteSaveButton.style.display = 'none';
 	newNoteField.style.display = "none"
+	newNoteTitle.style.display = "none"
 	const newNoteCtr = document.getElementById("newNoteCtr")
+	newNoteCtr.appendChild(newNoteTitle)
 	newNoteCtr.appendChild(newNoteField)
 	newNoteCtr.appendChild(newNoteSaveButton)
 	newNoteBtn.addEventListener("click", async () => {
 		console.log("new note button is pressed")
 		try {
 			newNoteSaveButton.style.display = 'inline';
+			newNoteTitle.style.display = "inline"
 			newNoteField.style.display = "inline"
 		}
 		catch (err) {
@@ -219,7 +240,7 @@
 			const apiUrl = 'https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes/insert';
 			const postData = {
 				userId: window.claims["cognito:username"],
-				noteId: window.numNotes + 1,
+				title: newNoteTitle.value,
 				content: newNoteField.value
 			};
 
@@ -256,23 +277,30 @@
 				console.error('Error sending POST request:', error);
 			});
 			newNoteSaveButton.style.display = 'none';
+			newNoteTitle.style.display = "none"
 			newNoteField.style.display = "none"
 			const notesDiv = document.getElementById("noteContainer");
 			const newParagraph = document.createElement('p');
 			newParagraph.setAttribute('id', "notePar"+(window.numNotes + 1))
+			const newTitleSpan = document.createElement('span');
+			newTitleSpan.textContent = newNoteTitle.value
 			const newSpan = document.createElement('span');
 			newSpan.textContent = newNoteField.value
 			newNoteField.value = ""
 			console.log("new span text content is " + newSpan)
 			newSpan.setAttribute('id', "noteSpan"+(window.numNotes + 1))
+			const newInputTitle = document.createElement("textarea")
+			newInputTitle.style.fieldSizing = 'content';
 			const newInputField = document.createElement("textarea")
 			newInputField.style.fieldSizing = 'content';
 			const newSaveButton = document.createElement("button")
 			newSaveButton.textContent = "Save"
 			newInputField.style.display = 'none';
+			newInputTitle.style.display = 'none';
 			newSaveButton.style.display = 'none';
 			newSpan.classList.add("editableText")
 			newParagraph.textContent = (window.numNotes + 1) + " "
+			newParagraph.appendChild(newTitleSpan);
 			newParagraph.appendChild(newSpan);
 			window.numNotes = window.numNotes + 1
 			newInputField.classList.add("editInput");
@@ -286,22 +314,27 @@
 				newInputField.value = newSpan.textContent;
 				
 				// 2. Hide the span and show the input field and button
+				newTitleSpan.style.display = 'none'
 				newSpan.style.display = 'none';
 				newInputField.style.display = 'inline-block';
+				newInputTitle.style.display = 'inline-block';
 				newSaveButton.style.display = 'inline-block';
 				
 				// 3. Automatically focus on the input field
-				newInputField.focus();
+				newInputTitle.focus();
 			});
 			newSaveButton.addEventListener('click', function() {
 				// 1. Get the new value
 				const newText = newInputField.value;
+				const newTitleText = newInputTitle.value;
 				
 				// 2. Update the visible text
+				newTitleSpan.textContent = newTitleText
 				newSpan.textContent = newText;
 				
 				// 3. Hide the input field and button, and show the text span again
 				newSpan.style.display = 'inline';
+				newTitleSpan.style.display = 'inline';
 				newInputField.style.display = 'none';
 				newSaveButton.style.display = 'none';
 			})

@@ -11,9 +11,10 @@ def lambda_handler(event, context):
     if isinstance(event, str):
         event = json.loads(event)
     user_id = event['userId']
-    note_id = int(event['noteId'])
+    note_id = event['noteId']
 
     new_content = event['content']
+    new_title = event['title']
     float_timestamp = time.time()
     current_timestamp = Decimal(str(float_timestamp))
     dynamodb = boto3.resource('dynamodb')
@@ -25,8 +26,9 @@ def lambda_handler(event, context):
                 'userId': user_id,
                 'noteId': note_id
             },
-            UpdateExpression="SET content = :content, updated_ts = :ts",
+            UpdateExpression="SET title = :title, content = :content, updated_ts = :ts",
             ExpressionAttributeValues={
+                ':title': new_title,
                 ':content': new_content,
                 ':ts': current_timestamp
             },

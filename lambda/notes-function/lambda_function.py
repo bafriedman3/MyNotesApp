@@ -14,6 +14,14 @@ def lambda_handler(event, context):
         )
         items = response['Items']
         if items:
+            for item in items:
+                if 'updated_ts' in item:
+                    # 1. Convert epoch (float/int) to datetime object
+                    # Note: if your epoch is in milliseconds, divide by 1000 first
+                    dt_object = datetime.fromtimestamp(float(item['updated_ts']))
+                    
+                    # 2. Format as a string (e.g., "2025-12-16 14:30:05")
+                    item['updated_ts'] = dt_object.strftime('%Y-%m-%d %H:%M:%S')
             return {
                 'statusCode': 200,
                 'body': json.dumps(items, default=lambda x: str(x))

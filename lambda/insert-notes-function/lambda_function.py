@@ -1,6 +1,7 @@
 import json
 import boto3
 import time
+import uuid
 from decimal import Decimal
 
 # This function updates the notes with the new content
@@ -11,8 +12,9 @@ def lambda_handler(event, context):
     if isinstance(event, str):
         event = json.loads(event)
     user_id = event['userId']
-    note_id = int(event['noteId'])
+    note_id = str(uuid.uuid4())
     note_content = event['content']
+    title = event['title']
     float_timestamp = time.time()
     current_timestamp = Decimal(str(float_timestamp))
     dynamodb = boto3.resource('dynamodb')
@@ -22,6 +24,7 @@ def lambda_handler(event, context):
         item = {
             'userId': user_id,
             'noteId': note_id,
+            'title': title,
             'content': note_content,
             'updated_ts': current_timestamp
         }
