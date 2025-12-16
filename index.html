@@ -94,9 +94,11 @@
 				titleSpan.addEventListener('click', function() {
 					// 1. Set the input field's value to the current text
 					newInputField.value = newSpan.textContent;
+					newTitleField.value = titleSpan.textContent
 					
 					// 2. Hide the span and show the input field and button
 					newSpan.style.display = 'none';
+					titleSpan.style.display = 'none'
 					newTitleField.style.display = 'inline-block';
 					newInputField.style.display = 'inline-block';
 					newSaveButton.style.display = 'inline-block';
@@ -110,7 +112,7 @@
 					const newTitleText = newTitleField.value;
 					
 					// 2. Update the visible text
-					titleSpan.textContent = newTitleText + " "
+					titleSpan.textContent = newTitleText + "  "
 					newSpan.textContent = newText;
 					
 					// 3. Hide the input field and button, and show the text span again
@@ -171,7 +173,7 @@
 				else {
 					title = "Text note " + data[i].updated_ts
 				}
-				titleSpan.textContent = title
+				titleSpan.textContent = title + "  "
 				titleSpan.classList.add("editableText")
 				newParagraph.appendChild(titleSpan);
 				newParagraph.appendChild(newSpan);
@@ -284,7 +286,7 @@
 			const newParagraph = document.createElement('p');
 			newParagraph.setAttribute('id', "notePar"+(window.numNotes + 1))
 			const newTitleSpan = document.createElement('span');
-			newTitleSpan.textContent = newNoteTitle.value + " "
+			newTitleSpan.textContent = newNoteTitle.value + "  "
 			const newSpan = document.createElement('span');
 			newSpan.textContent = newNoteField.value
 			newNoteField.value = ""
