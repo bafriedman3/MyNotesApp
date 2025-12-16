@@ -1,5 +1,6 @@
 import json
 import boto3
+from datetime import datetime
 
 def lambda_handler(event, context):
     # This function retrieves notes for a particular user
