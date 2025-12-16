@@ -225,7 +225,16 @@ Resources:
         Name: UserNotes
         ContentType: application/json
         Description: Schema for the request body to update an existing note
-        Schema: '{"$schema": "http://json-schema.org/draft-04/schema#", "title": "Update Note Request", "type": "object", "properties": {"userId": {"type": "string"}, "noteId": {"type": ["string", "number"]}, "content": {"type": "string"}}, "required": ["userId", "noteId", "content"]}'
+        Schema: '{"$schema": "http://json-schema.org/draft-04/schema#", "title": "Update Note Request", "type": "object", "properties": {"userId": {"type": "string"}, "noteId": {"type": ["string", "number"]}, "title": {"type": "string"}}, "content": {"type": "string"}}, "required": ["userId", "noteId", "content"]}'
+  
+  UserNotesInsertModel:
+      Type: AWS::ApiGateway::Model
+      Properties:
+        RestApiId: !Ref NotesApiGatewayV2
+        Name: UserNotes
+        ContentType: application/json
+        Description: Schema for the request body to update an existing note
+        Schema: '{"$schema": "http://json-schema.org/draft-04/schema#", "title": "Update Note Request", "type": "object", "properties": {"userId": {"type": "string"}, "title": {"type": "string"}}, "content": {"type": "string"}}, "required": ["userId", "content"]}'
   
   BodyValidator:
       Type: AWS::ApiGateway::RequestValidator
@@ -305,7 +314,7 @@ Resources:
         HttpMethod: POST
         AuthorizationType: NONE
         RequestModels:
-            application/json: !Ref UserNotesModel
+            application/json: !Ref UserNotesInsertModel
         RequestValidatorId: !Ref BodyValidator
         MethodResponses:
           - StatusCode: 200
