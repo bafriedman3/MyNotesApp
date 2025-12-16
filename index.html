@@ -288,7 +288,7 @@
 			const newSpan = document.createElement('span');
 			newSpan.textContent = newNoteField.value
 			newNoteField.value = ""
-			console.log("new span text content is " + newSpan)
+			console.log("new span text content is " + newSpan.textContent)
 			newSpan.setAttribute('id', "noteSpan"+(window.numNotes + 1))
 			const newInputTitle = document.createElement("textarea")
 			newInputTitle.style.fieldSizing = 'content';
