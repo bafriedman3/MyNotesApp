@@ -171,7 +171,7 @@
 					title = data[i].title
 				}
 				else {
-					title = "Text note " + data[i].updated_ts
+					title = "Text note " + data[i].updated_ts.substring(0,11)
 				}
 				titleSpan.textContent = title + "  "
 				titleSpan.classList.add("editableText")
@@ -239,11 +239,15 @@
 	newNoteSaveButton.addEventListener("click", async () => {
 		console.log("save new note is pressed")
 		try {
+			newTitle = newNoteTitle.value
+			if(!newTitle) {
+				newTitle = "Text note " + (new Date()).toISOString().substring(0,11)
+			}
 			// save the note into the database 
 			const apiUrl = 'https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes/insert';
 			const postData = {
 				userId: window.claims["cognito:username"],
-				title: newNoteTitle.value,
+				title: newTitle,
 				content: newNoteField.value
 			};
 
@@ -286,7 +290,7 @@
 			const newParagraph = document.createElement('p');
 			newParagraph.setAttribute('id', "notePar"+(window.numNotes + 1))
 			const newTitleSpan = document.createElement('span');
-			newTitleSpan.textContent = newNoteTitle.value + "  "
+			newTitleSpan.textContent = newTitle + "  "
 			const newSpan = document.createElement('span');
 			newSpan.textContent = newNoteField.value
 			newNoteField.value = ""
@@ -315,7 +319,7 @@
 			newTitleSpan.addEventListener('click', function() {
 				// 1. Set the input field's value to the current text
 				newInputField.value = newSpan.textContent;
-				
+				newInputTitle.value = newTitleSpan.textContent
 				// 2. Hide the span and show the input field and button
 				newTitleSpan.style.display = 'none'
 				newSpan.style.display = 'none';
@@ -332,7 +336,12 @@
 				const newTitleText = newInputTitle.value;
 				
 				// 2. Update the visible text
-				newTitleSpan.textContent = newTitleText
+				if(newTitleText) {
+					newTitleSpan.textContent = newTitleText
+				}
+				else {
+					newTitleSpan.textContent = "Text note " + (new Date()).toISOString().substring(0,11)
+				}
 				newSpan.textContent = newText;
 				
 				// 3. Hide the input field and button, and show the text span again
