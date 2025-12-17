@@ -11,7 +11,9 @@ def lambda_handler(event, context):
     print(userId)
     try:
         response = table.query(
-            KeyConditionExpression=boto3.dynamodb.conditions.Key('userId').eq(userId)
+            IndexName='UpdateTimeIndex',
+            KeyConditionExpression=boto3.dynamodb.conditions.Key('userId').eq(userId),
+            ScanIndexForward=True
         )
         items = response['Items']
         if items:
