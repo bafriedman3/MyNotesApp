@@ -171,7 +171,7 @@
 					title = data[i].title
 				}
 				else {
-					title = "Text note " + data[i].updated_ts.substring(0,11)
+					title = "Text note " + data[i].updated_ts.substring(0,10)
 				}
 				titleSpan.textContent = title + "  "
 				titleSpan.classList.add("editableText")
@@ -241,7 +241,7 @@
 		try {
 			newTitle = newNoteTitle.value
 			if(!newTitle) {
-				newTitle = "Text note " + (new Date()).toISOString().substring(0,11)
+				newTitle = "Text note " + (new Date()).toISOString().substring(0,10)
 			}
 			// save the note into the database 
 			const apiUrl = 'https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes/insert';
@@ -340,7 +340,7 @@
 					newTitleSpan.textContent = newTitleText
 				}
 				else {
-					newTitleSpan.textContent = "Text note " + (new Date()).toISOString().substring(0,11)
+					newTitleSpan.textContent = "Text note " + (new Date()).toISOString().substring(0,10)
 				}
 				newSpan.textContent = newText;
 				
