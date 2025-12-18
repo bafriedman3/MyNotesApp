@@ -145,6 +145,7 @@ Resources:
                   Action:
                     - dynamodb:Scan
                     - dynamodb:PutItem
+                    - dynamodb:DeleteItem
                   Resource:
                     # Use !Sub to dynamically insert AccountId, Region, and the literal table name
                     - !Sub 
