@@ -143,12 +143,15 @@ Resources:
               Statement:
                 - Effect: Allow
                   Action:
-                    - dynamodb:Query
+                    - dynamodb:Scan
                     - dynamodb:PutItem
                   Resource:
                     # Use !Sub to dynamically insert AccountId, Region, and the literal table name
                     !Sub 
                       - arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TableName}
+                      - TableName: UserNotes # <-- The actual, literal name of your DynamoDB table
+                    !Sub 
+                      - arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TableName}/index/*
                       - TableName: UserNotes # <-- The actual, literal name of your DynamoDB table
                 - Effect: Allow
                   Action:

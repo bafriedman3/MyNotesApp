@@ -11,11 +11,11 @@ def lambda_handler(event, context):
     period = event['period']
     cutoff_time = int(time.time()) - period
     try:
-        response = table.query(
+        response = table.scan(
             IndexName='UpdateTimeIndex',
-            KeyConditionExpression=boto3.dynamodb.conditions.Key('updated_ts').lt(cutoff_time)
+            FilterExpression=Attr('updated_ts').lt(cutoff_time)
         )
-        items = response['Items']
+        items = response.get('Items', [])
         while i<len(items):
             trans_archive_notes(items[i:i+12])
             i = i+12
