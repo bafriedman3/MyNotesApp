@@ -12,11 +12,13 @@ def lambda_handler(event, context):
     period = event['period']
     cutoff_time = int(time.time()) - period
     try:
+        print("cutoff time: " + cutoff_time)
         response = table.scan(
             IndexName='UpdateTimeIndex',
             FilterExpression=Attr('updated_ts').lt(cutoff_time)
         )
         items = response.get('Items', [])
+        print("number of items:" + len(items)
         i = 0
         while i<len(items):
             trans_archive_notes(items[i:i+12])
