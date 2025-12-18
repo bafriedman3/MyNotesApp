@@ -143,7 +143,7 @@ Resources:
               Statement:
                 - Effect: Allow
                   Action:
-                    - dynamodb:GetItem
+                    - dynamodb:Query
                     - dynamodb:PutItem
                   Resource:
                     # Use !Sub to dynamically insert AccountId, Region, and the literal table name
