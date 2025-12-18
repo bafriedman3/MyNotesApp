@@ -7,7 +7,7 @@ dynamodb = boto3.resource('dynamodb')
 client = boto3.client("dynamodb")
     
 def lambda_handler(event, context):
-    
+    table = dynamodb.Table('UserNotes')
     period = event['period']
     cutoff_time = int(time.time()) - period
     try:
