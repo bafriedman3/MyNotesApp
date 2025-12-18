@@ -54,8 +54,8 @@ def trans_archive_notes(notes):
             "Delete": {
                 "TableName": "UserNotes",
                 "Key": {
-                    "PK": {"S": note["userId"]},
-                    "SK": {"S": note["noteId"]}
+                    "userId": {"S": note["userId"]},
+                    "noteId": {"S": note["noteId"]}
                 }
             }
         })
