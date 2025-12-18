@@ -17,7 +17,9 @@ Parameters:
   InsertNotesZipVersion: # NEW PARAMETER: Must match the key in version-ids.json
     Type: String
     Description: S3 Version ID for the insert notes function code
-
+  ArchiveNotesZipVersion: # NEW PARAMETER: Must match the key in version-ids.json
+    Type: String
+    Description: S3 Version ID for the archive notes function code
 Resources:
 
   # Lambda function
@@ -93,7 +95,24 @@ Resources:
         S3Bucket: !Ref ArtifactBucket
         S3Key: insert-notes-function.zip
         S3ObjectVersion: !Ref InsertNotesZipVersion
-        
+  
+  NotesArchiveLambdaFunction:
+    Type: AWS::Lambda::Function
+    DeletionPolicy: Retain
+    Properties:
+      Timeout: 30
+      FunctionName: archive-notes-function
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.14  # adjust to your runtime
+      Role: !GetAtt InsertNoteFunctionRole.Arn
+      Tags:
+        - Key: Revision
+          Value: !Ref CodePipelineRevision
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: archive-notes-function.zip
+        S3ObjectVersion: !Ref ArchiveNotesZipVersion
+  
   NotesInsertFunctionPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -129,7 +148,15 @@ Resources:
                     # Use !Sub to dynamically insert AccountId, Region, and the literal table name
                     !Sub 
                       - arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TableName}
-                      - TableName: UserNotes # <-- The actual, literal name of your DynamoDB table 
+                      - TableName: UserNotes # <-- The actual, literal name of your DynamoDB table
+                - Effect: Allow
+                  Action:
+                    - dynamodb:PutItem
+                  Resource:
+                    # Use !Sub to dynamically insert AccountId, Region, and the literal table name
+                    !Sub 
+                      - arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ArchiveTableName}
+                      - TableName: UserNotesArchive # <-- The actual, literal name of your DynamoDB table       
   
   # API Gateway
   NotesApiGatewayV2:
