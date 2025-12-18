@@ -24,11 +24,11 @@ def lambda_handler(event, context):
     except Exception as e:
         print(f"Archive failed: {str(e)}")
         if hasattr(e, 'response'):
-        # This will print the actual "Message" for each failed item
-        reasons = e.response.get('CancellationReasons', [])
-        for i, reason in enumerate(reasons):
-            if reason.get('Code') != 'None':
-                print(f"Item {i} failed with {reason.get('Code')}: {reason.get('Message')}")
+            # This will print the actual "Message" for each failed item
+            reasons = e.response.get('CancellationReasons', [])
+            for i, reason in enumerate(reasons):
+                if reason.get('Code') != 'None':
+                    print(f"Item {i} failed with {reason.get('Code')}: {reason.get('Message')}")
         raise e
 
 def trans_archive_notes(notes):
