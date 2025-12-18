@@ -156,7 +156,7 @@ Resources:
                     # Use !Sub to dynamically insert AccountId, Region, and the literal table name
                     !Sub 
                       - arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ArchiveTableName}
-                      - TableName: UserNotesArchive # <-- The actual, literal name of your DynamoDB table       
+                      - ArchiveTableName: UserNotesArchive # <-- The actual, literal name of your DynamoDB table       
   
   # API Gateway
   NotesApiGatewayV2:
