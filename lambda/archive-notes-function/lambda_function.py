@@ -35,6 +35,7 @@ def trans_archive_notes(notes):
     actions = []
 
     for note in notes:
+        print("current note is: ", note)
         archived_ts = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
         actions.append({
             "Put": {
