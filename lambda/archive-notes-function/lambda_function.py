@@ -34,8 +34,9 @@ def trans_archive_notes(notes):
             "Put": {
                 "TableName": "UserNotesArchive",
                 "Item": {
-                    "PK": {"S": note["userId"]},
-                    "SK": {"S": f"{archived_ts}#{note['noteId']}"},
+                    "userId": {"S": note["userId"]},
+                    "archived_ts#noteId": {"S": f"{archived_ts}#{note['noteId']}"},
+                    "noteId": {"S": note['noteId']},
                     "content": {"S": note["content"]},
                     "title": {"S": note["title"]},
                     "updated_ts": {"N": str(note["updated_ts"])}
