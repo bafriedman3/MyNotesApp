@@ -36,7 +36,7 @@ def trans_archive_notes(notes):
                     "SK": {"S": f"{archived_ts}#{note['noteId']}"},
                     "content": {"S": note["content"]}
                     "title": {"S": note["title"]}
-                    "updated_ts: {"N": note[updated_ts]}
+                    "updated_ts": {"N": note[updated_ts]}
                 },
                 "ConditionExpression": "attribute_not_exists(PK)"
             }
