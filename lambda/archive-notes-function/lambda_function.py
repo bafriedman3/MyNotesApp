@@ -32,7 +32,7 @@ def trans_archive_notes(notes):
         archived_ts = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
         actions.append({
             "Put": {
-                "TableName": "NotesArchiveTable",
+                "TableName": "UserNotesArchive",
                 "Item": {
                     "PK": {"S": note["userId"]},
                     "SK": {"S": f"{archived_ts}#{note['noteId']}"},
@@ -45,10 +45,10 @@ def trans_archive_notes(notes):
         })
         actions.append({
             "Delete": {
-                "TableName": "NotesTable",
+                "TableName": "UserNotes",
                 "Key": {
-                    "PK": {"S": note["PK"]},
-                    "SK": {"S": note["SK"]}
+                    "PK": {"S": note["userId"]},
+                    "SK": {"S": note["noteId"]}
                 }
             }
         })
