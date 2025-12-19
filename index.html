@@ -83,8 +83,10 @@
 				const newSpan = document.createElement('span');
 				const titleSpan = document.createElement('span');
 				const newTitleField = document.createElement("textarea")
+				newTitleField.placeholder='Enter note title'
 				newTitleField.style.fieldSizing = 'content';
 				const newInputField = document.createElement("textarea")
+				newInputField.placeholder='Enter note text'
 				newInputField.style.fieldSizing = 'content';
 				const newSaveButton = document.createElement("button")
 				newSaveButton.textContent = "Save"
@@ -215,7 +217,11 @@
 	const newNoteBtn = document.getElementById("newNote");
 	console.log("obtained new note btn")
 	const newNoteField = document.createElement("textarea")
+	newNoteField.style.fieldSizing = 'content';
+	newNoteField.placeholder='Enter note text'
 	const newNoteTitle = document.createElement("textarea")
+	newNoteTitle.style.fieldSizing = 'content';
+	newNoteTitle.placeholder='Enter note title'
 	const newNoteSaveButton = document.createElement("button")
 	newNoteSaveButton.textContent = "Save"
 	newNoteSaveButton.style.display = 'none';
@@ -286,6 +292,10 @@
 			newNoteSaveButton.style.display = 'none';
 			newNoteTitle.style.display = "none"
 			newNoteField.style.display = "none"
+			newNoteTitle.style.fieldSizing = 'content';
+			newNoteField.style.fieldSizing = 'content';
+			newNoteTitle.placeholder='Enter note title'
+			newNoteField.placeholder='Enter note text'
 			const notesDiv = document.getElementById("noteContainer");
 			const newParagraph = document.createElement('p');
 			newParagraph.setAttribute('id', "notePar"+(window.numNotes + 1))
@@ -312,6 +322,7 @@
 			window.numNotes = window.numNotes + 1
 			newInputField.classList.add("editInput");
 			newSaveButton.classList.add("saveButton");
+			newParagraph.appendChild(newInputTitle)
 			newParagraph.appendChild(newInputField);
 			newParagraph.appendChild(newSaveButton);
 			notesDiv.appendChild(newParagraph)
