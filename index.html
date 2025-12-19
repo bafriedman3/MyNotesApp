@@ -33,7 +33,8 @@
 			title: title,
 			content: content
 		};
-		console.log("in updateNoteInDb postData: " + postData) 
+		console.log("in updateNoteInDb postData: userId" + postData.userId + " noteId: " + postData.noteId + 
+					" title: " + postData.title + " content: " + postData.content) 
 		fetch(window.updateURL, {
 			// 1. Specify the method
 			method: 'POST', 
