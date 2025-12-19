@@ -24,22 +24,6 @@
 <div id="newNoteCtr"></div>
 </body>
 <script>
-  // 1. Configure Amplify
-  window.onload = async function() {
-  aws_amplify.Amplify.configure({
-    Auth: {
-      region: "us-east-1",
-      userPoolId: "us-east-1_gHD8mRDi2",
-      userPoolWebClientId: "29ufjq8g5t6k4pts2jjne0diab",
-      oauth: {
-        domain: "us-east-1ghd8mrdi2.auth.us-east-1.amazoncognito.com",
-        scope: ["openid", "email"],
-        redirectSignIn: "https://boris-notes-app.s3.us-east-1.amazonaws.com/index.html",
-        redirectSignOut: "https://boris-notes-app.s3.us-east-1.amazonaws.com/index.html",
-        responseType: "code"
-      }
-    }
-  });
   function updateNoteInDb(userId, noteId, title, content) {
 		window.updateURL='https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes/update'
 		
@@ -83,6 +67,23 @@
 			console.error('Error sending POST request:', error);
 		});
   }
+  // 1. Configure Amplify
+  window.onload = async function() {
+  aws_amplify.Amplify.configure({
+    Auth: {
+      region: "us-east-1",
+      userPoolId: "us-east-1_gHD8mRDi2",
+      userPoolWebClientId: "29ufjq8g5t6k4pts2jjne0diab",
+      oauth: {
+        domain: "us-east-1ghd8mrdi2.auth.us-east-1.amazoncognito.com",
+        scope: ["openid", "email"],
+        redirectSignIn: "https://boris-notes-app.s3.us-east-1.amazonaws.com/index.html",
+        redirectSignOut: "https://boris-notes-app.s3.us-east-1.amazonaws.com/index.html",
+        responseType: "code"
+      }
+    }
+  });
+  
   try {
 	  const url = new URL(window.location.href);
 	  
