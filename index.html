@@ -292,6 +292,7 @@
 				console.log("statusCode:", data.statusCode);
 				console.log("body:", data.body);
 				newNoteId = data.body.noteId
+				console.log("after insert call noteId:" + newNoteId)
 			})
 			.catch(error => {
 				// Handle any errors during the fetch or promise chain
@@ -362,6 +363,7 @@
 					newTitleSpan.textContent = "Text note " + (new Date()).toISOString().substring(0,10)
 				}
 				newSpan.textContent = newText;
+				console.log("before update call note id:" + newNoteId)
 				updateNoteInDb(window.claims["cognito:username"], newNoteId, newTitleText, newText)
 				
 				// 3. Hide the input field and button, and show the text span again
