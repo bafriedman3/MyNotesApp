@@ -40,9 +40,52 @@
       }
     }
   });
+  function updateNoteInDb(userId, noteId, title, content) {
+		window.updateURL='https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes/update'
+		
+	    const postData = {
+			userId: userId,
+			noteId: noteId,
+			title: title,
+			content: content
+		};
+
+		fetch(window.updateURL, {
+			// 1. Specify the method
+			method: 'POST', 
+			
+			// 2. Set the headers (crucial for sending JSON)
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			
+			// 3. Convert the JavaScript object to a JSON string for the body
+			body: JSON.stringify(postData) 
+		})
+		.then(response => {
+			// Check if the request was successful (status 200-299)
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			// Parse the JSON body from the response
+			console.log('Success:', response);
+			return response.json()
+		})
+		.then(data => {
+			console.log("Parsed response JSON:", data);
+
+			// Now you can access your fields:
+			console.log("statusCode:", data.statusCode);
+			console.log("body:", data.body);
+		})
+		.catch(error => {
+			// Handle any errors during the fetch or promise chain
+			console.error('Error sending POST request:', error);
+		});
+  }
   try {
 	  const url = new URL(window.location.href);
-
+	  
 	  // If Cognito redirected back from login, DO NOT logout
 	  if (!url.searchParams.has("code")) {
 		  aws_amplify.Amplify.Auth.signOut({ global: false });
@@ -125,46 +168,7 @@
 					newSaveButton.style.display = 'none';
 
 					// NOTE: If you were connecting to a database, the save logic goes here!
-					const apiUrl = 'https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes/update';
-					const postData = {
-						userId: data[i].userId,
-						noteId: data[i].noteId,
-						title: newTitleText,
-						content: newText
-					};
-
-					fetch(apiUrl, {
-						// 1. Specify the method
-						method: 'POST', 
-						
-						// 2. Set the headers (crucial for sending JSON)
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						
-						// 3. Convert the JavaScript object to a JSON string for the body
-						body: JSON.stringify(postData) 
-					})
-					.then(response => {
-						// Check if the request was successful (status 200-299)
-						if (!response.ok) {
-							throw new Error(`HTTP error! status: ${response.status}`);
-						}
-						// Parse the JSON body from the response
-						console.log('Success:', response);
-						return response.json()
-					})
-					.then(data => {
-						console.log("Parsed response JSON:", data);
-
-						// Now you can access your fields:
-						console.log("statusCode:", data.statusCode);
-						console.log("body:", data.body);
-					})
-					.catch(error => {
-						// Handle any errors during the fetch or promise chain
-						console.error('Error sending POST request:', error);
-					});
+					updateNoteInDb(data[i].userId, data[i].noteId, newTitleText, newText)
 				});
 				newSpan.setAttribute('id', "noteSpan"+i)
 				newSpan.textContent = data[i].content
@@ -284,6 +288,7 @@
 				// Now you can access your fields:
 				console.log("statusCode:", data.statusCode);
 				console.log("body:", data.body);
+				let newNoteId = data.body.noteId
 			})
 			.catch(error => {
 				// Handle any errors during the fetch or promise chain
@@ -354,6 +359,7 @@
 					newTitleSpan.textContent = "Text note " + (new Date()).toISOString().substring(0,10)
 				}
 				newSpan.textContent = newText;
+				updateNoteInDb(window.claims["cognito:username"], newNoteId, newTitleText, newText)
 				
 				// 3. Hide the input field and button, and show the text span again
 				newSpan.style.display = 'inline';
