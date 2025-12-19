@@ -291,7 +291,7 @@
 				// Now you can access your fields:
 				console.log("statusCode:", data.statusCode);
 				console.log("body:", data.body);
-				newNoteId = data.body.noteId
+				newNoteId = JSON.parse(data.body).noteId
 				console.log("after insert call noteId:" + newNoteId)
 			})
 			.catch(error => {
