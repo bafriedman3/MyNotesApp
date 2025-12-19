@@ -249,6 +249,7 @@
 	})
 	newNoteSaveButton.addEventListener("click", async () => {
 		console.log("save new note is pressed")
+		let newNoteId
 		try {
 			newTitle = newNoteTitle.value
 			if(!newTitle) {
@@ -289,7 +290,7 @@
 				// Now you can access your fields:
 				console.log("statusCode:", data.statusCode);
 				console.log("body:", data.body);
-				let newNoteId = data.body.noteId
+				newNoteId = data.body.noteId
 			})
 			.catch(error => {
 				// Handle any errors during the fetch or promise chain
