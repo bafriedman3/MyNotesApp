@@ -18,7 +18,7 @@ def lambda_handler(event, context):
             FilterExpression=Attr('updated_ts').lt(cutoff_time)
         )
         items = response.get('Items', [])
-        print("number of items:" + len(items)
+        print("number of items:" + len(items))
         i = 0
         while i<len(items):
             trans_archive_notes(items[i:i+12])
