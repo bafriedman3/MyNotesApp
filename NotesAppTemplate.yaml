@@ -465,7 +465,7 @@ Resources:
     Properties:
       Path: "/service-role/"
       ManagedPolicyArns:
-      - "arn:aws:iam::714163356458:policy/service-role/EvetBridgeSchedulerLambdaPolicy"
+      - "arn:aws:iam::714163356458:policy/service-role/EventBridgeSchedulerLambdaPolicy"
       MaxSessionDuration: 3600
       RoleName: "EventBridgeScheduleLambdaRole"
       AssumeRolePolicyDocument:
@@ -479,11 +479,11 @@ Resources:
           Principal:
             Service: "scheduler.amazonaws.com"
 
-  EvetBridgeSchedulerLambdaPolicy:
+  EventBridgeSchedulerLambdaPolicy:
     Type: "AWS::IAM::ManagedPolicy"
     DeletionPolicy: "Retain"
     Properties:
-      ManagedPolicyName: "EvetBridgeSchedulerLambdaPolicy"
+      ManagedPolicyName: "EventBridgeSchedulerLambdaPolicy"
       Path: "/service-role/"
       Description: ""
       Groups: []
