@@ -25,7 +25,6 @@ Resources:
   # Lambda function
   NotesRetrieveLambdaFunction:
     Type: AWS::Lambda::Function
-    DeletionPolicy: Retain
     Properties:
       Timeout: 30
       FunctionName: notes-function
@@ -53,7 +52,6 @@ Resources:
   # Lambda function
   NotesUpdateLambdaFunction:
     Type: AWS::Lambda::Function
-    DeletionPolicy: Retain
     Properties:
       Timeout: 30
       FunctionName: update-notes-function
@@ -81,7 +79,6 @@ Resources:
   # Lambda function
   NotesInsertLambdaFunction:
     Type: AWS::Lambda::Function
-    DeletionPolicy: Retain
     Properties:
       Timeout: 30
       FunctionName: insert-notes-function
@@ -98,7 +95,6 @@ Resources:
   
   NotesArchiveLambdaFunction:
     Type: AWS::Lambda::Function
-    DeletionPolicy: Retain
     Properties:
       Timeout: 30
       FunctionName: archive-notes-function
@@ -202,7 +198,6 @@ Resources:
   # API Gateway
   NotesApiGatewayV2:
     Type: AWS::ApiGateway::RestApi
-    DeletionPolicy: Retain
     Properties:
       Name: 'Notes API V2'
       Description: Existing API Gateway for Notes app
@@ -477,7 +472,6 @@ Resources:
   #EventBridgeSchedule
   UserNotesArchiveSchedule:
     Type: "AWS::Scheduler::Schedule"
-    DeletionPolicy: "Retain"
     Properties:
       GroupName: "default"
       ScheduleExpression: "rate(1 hour)"
@@ -497,7 +491,6 @@ Resources:
       
   EventBridgeScheduleLambdaRole:
     Type: "AWS::IAM::Role"
-    DeletionPolicy: "Retain"
     Properties:
       Path: "/service-role/"
       ManagedPolicyArns:
@@ -517,7 +510,6 @@ Resources:
 
   EventBridgeSchedulerLambdaPolicy:
     Type: "AWS::IAM::ManagedPolicy"
-    DeletionPolicy: "Retain"
     Properties:
       ManagedPolicyName: "EventBridgeSchedulerLambdaPolicy"
       Path: "/service-role/"
