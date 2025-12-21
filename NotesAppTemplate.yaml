@@ -596,22 +596,3 @@ Resources:
               Service: "sns.amazonaws.com"
             Action: "sqs:SendMessage"
             Resource: "*"
-  
-  # Update CloudFormation role
-  UpdateCFRolePermissions:
-      Type: "AWS::IAM::Policy"
-      Properties:
-        PolicyName: "CFResourceCreationPolicy"
-        Roles: 
-          - "NotesAppCFRole" # The name of your existing CF role
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action:
-                - "sqs:*"
-                - "sns:*"
-                - "lambda:*"
-                - "iam:PassRole" # Vital so CF can give roles to Lambda
-                - "dynamodb:*"
-              Resource: "*"
