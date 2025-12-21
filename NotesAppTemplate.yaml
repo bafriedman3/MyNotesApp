@@ -496,6 +496,4 @@ Resources:
           Action:
           - "lambda:InvokeFunction"
           Effect: "Allow"
-      Roles:
-      - "EventBridgeScheduleLambdaRole"
       Users: []
