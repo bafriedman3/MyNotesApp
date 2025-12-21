@@ -201,7 +201,6 @@ Resources:
   NotesApiGatewayV2:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Name: 'Notes API V2'
       Description: Existing API Gateway for Notes app
       EndpointConfiguration: # Set the API Gateway type to Regional
         Types:
