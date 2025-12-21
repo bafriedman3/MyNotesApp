@@ -437,3 +437,65 @@ Resources:
         RestApiId: !Ref NotesApiGatewayV2
         StageName: dev
         DeploymentId: !Ref ApiDeployment
+        
+  #EventBridgeSchedule
+  UserNotesArchiveSchedule:
+    Type: "AWS::Scheduler::Schedule"
+    DeletionPolicy: "Retain"
+    Properties:
+      GroupName: "default"
+      ScheduleExpression: "rate(1 hour)"
+      Target:
+        Input: "{\n    \"period\" : 3600\n}"
+        Arn: "arn:aws:lambda:us-east-1:714163356458:function:archive-notes-function"
+        RetryPolicy:
+          MaximumEventAgeInSeconds: 86400
+          MaximumRetryAttempts: 0
+        RoleArn: "arn:aws:iam::714163356458:role/service-role/EventBridgeScheduleLambdaRole"
+      Description: "Archive user notes"
+      State: "ENABLED"
+      FlexibleTimeWindow:
+        Mode: "OFF"
+      ScheduleExpressionTimezone: "America/New_York"
+      Name: "UserNotesArchiveSchedule"
+	  
+  EventBridgeScheduleLambdaRole:
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/service-role/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::714163356458:policy/service-role/EvetBridgeSchedulerLambdaPolicy"
+      MaxSessionDuration: 3600
+      RoleName: "EventBridgeScheduleLambdaRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Condition:
+            StringEquals:
+              aws:SourceAccount: "714163356458"
+          Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "scheduler.amazonaws.com"
+
+  EvetBridgeSchedulerLambdaPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    DeletionPolicy: "Retain"
+    Properties:
+      ManagedPolicyName: "EvetBridgeSchedulerLambdaPolicy"
+      Path: "/service-role/"
+      Description: ""
+      Groups: []
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Resource:
+          - "arn:aws:lambda:us-east-1:714163356458:function:archive-notes-function:*"
+          - "arn:aws:lambda:us-east-1:714163356458:function:archive-notes-function"
+          Action:
+          - "lambda:InvokeFunction"
+          Effect: "Allow"
+      Roles:
+      - "EventBridgeScheduleLambdaRole"
+      Users: []
