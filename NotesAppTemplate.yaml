@@ -458,7 +458,7 @@ Resources:
         Mode: "OFF"
       ScheduleExpressionTimezone: "America/New_York"
       Name: "UserNotesArchiveSchedule"
-	  
+      
   EventBridgeScheduleLambdaRole:
     Type: "AWS::IAM::Role"
     DeletionPolicy: "Retain"
