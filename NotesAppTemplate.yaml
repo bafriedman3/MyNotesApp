@@ -192,7 +192,9 @@ Resources:
                 - Effect: Allow
                   Action:
                     - sns:publish
-                  Resource: !Ref ArchiveSuccessTopic
+                  Resource: 
+                    - !Ref ArchiveSuccessTopic
+                    - !Ref ArchiveFailureTopic 
                   
   
   # API Gateway
