@@ -20,9 +20,15 @@ def lambda_handler(event, context):
         items = response.get('Items', [])
         print("number of items:", len(items))
         i = 0
+        batch_count = 0
         while i<len(items):
             trans_archive_notes(items[i:i+12])
+            batch_count = batch_count + 1
             i = i+12
+        return {
+            "batches_processed": batch_count,
+            "number_notes_archived": len(itens)
+        }
     except Exception as e:
         print(f"Archive failed: {str(e)}")
         if hasattr(e, 'response'):

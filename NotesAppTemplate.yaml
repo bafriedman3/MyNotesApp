@@ -104,7 +104,7 @@ Resources:
       FunctionName: archive-notes-function
       Handler: lambda_function.lambda_handler
       Runtime: python3.14  # adjust to your runtime
-      Role: !GetAtt InsertNoteFunctionRole.Arn
+      Role: !GetAtt ArchiveNoteFunctionRole.Arn
       Tags:
         - Key: Revision
           Value: !Ref CodePipelineRevision
@@ -154,6 +154,37 @@ Resources:
                     - !Sub 
                       - arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TableName}/index/*
                       - TableName: UserNotes # <-- The actual, literal name of your DynamoDB table
+  
+  ArchiveNoteFunctionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                # This is the Lambda Service Principal
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole         
+        Policies:
+          - PolicyName: ArchiveUserNotesAccess
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamodb:Scan
+                    - dynamodb:DeleteItem
+                  Resource:
+                    # Use !Sub to dynamically insert AccountId, Region, and the literal table name
+                    - !Sub 
+                      - arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TableName}
+                      - TableName: UserNotes # <-- The actual, literal name of your DynamoDB table
+                    - !Sub 
+                      - arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TableName}/index/*
+                      - TableName: UserNotes # <-- The actual, literal name of your DynamoDB table
                 - Effect: Allow
                   Action:
                     - dynamodb:PutItem
@@ -161,7 +192,12 @@ Resources:
                     # Use !Sub to dynamically insert AccountId, Region, and the literal table name
                     !Sub 
                       - arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ArchiveTableName}
-                      - ArchiveTableName: UserNotesArchive # <-- The actual, literal name of your DynamoDB table       
+                      - ArchiveTableName: UserNotesArchive # <-- The actual, literal name of your DynamoDB table
+                - Effect: Allow
+                  Action:
+                    - sns:publish
+                  Resource: !Ref ArchiveSuccessTopic
+                  
   
   # API Gateway
   NotesApiGatewayV2:
@@ -497,3 +533,66 @@ Resources:
           - "lambda:InvokeFunction"
           Effect: "Allow"
       Users: []
+      
+  #SNS integration for archiving
+  ArchiveSuccessTopic:
+      Type: "AWS::SNS::Topic"
+      Properties:
+        TopicName: "UserNotesArchiveSuccess"
+        DisplayName: "Note Archive Success Notifications"
+  ArchiveFailureTopic:
+      Type: "AWS::SNS::Topic"
+      Properties:
+        TopicName: "UserNotesArchiveFailure"
+        DisplayName: "Note Archive Failure Notifications"
+  # --- 2. SQS Queues ---
+  ArchiveSuccessQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "UserNotesArchiveSuccessQueue"
+
+  ArchiveFailureQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "UserNotesArchiveFailureQueue"
+
+  # --- 3. SNS to SQS Subscriptions ---
+  SuccessSubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      TopicArn: !Ref ArchiveSuccessTopic
+      Endpoint: !GetAtt ArchiveSuccessQueue.Arn
+      Protocol: "sqs"
+
+  FailureSubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      TopicArn: !Ref ArchiveFailureTopic
+      Endpoint: !GetAtt ArchiveFailureQueue.Arn
+      Protocol: "sqs"
+      
+  LambdaDestinationConfig:
+      Type: AWS::Lambda::EventInvokeConfig
+      Properties:
+        FunctionName: !Ref NotesArchiveLambdaFunction # Use Ref to your Lambda
+        Qualifier: "$LATEST"
+        DestinationConfig:
+          OnSuccess:
+            Destination: !Ref ArchiveSuccessTopic
+          OnFailure:
+            Destination: !Ref ArchiveFailureTopic
+            
+  SnsToSqsPolicy:
+    Type: "AWS::SQS::QueuePolicy"
+    Properties:
+      Queues:
+        - !Ref ArchiveSuccessQueue
+        - !Ref ArchiveFailureQueue
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: "sns.amazonaws.com"
+            Action: "sqs:SendMessage"
+            Resource: "*"
