@@ -27,7 +27,7 @@ def lambda_handler(event, context):
             i = i+12
         return {
             "batches_processed": batch_count,
-            "number_notes_archived": len(itens)
+            "number_notes_archived": len(items)
         }
     except Exception as e:
         print(f"Archive failed: {str(e)}")
