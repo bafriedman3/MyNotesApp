@@ -25,7 +25,7 @@
 </body>
 <script>
   function updateNoteInDb(userId, noteId, title, content) {
-		window.updateURL='https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes/update'
+		window.updateURL='https://b71y9yeuzk.execute-api.us-east-1.amazonaws.com/dev/notes/update'
 		
 	    const postData = {
 			userId: userId,
@@ -114,7 +114,7 @@
 		console.log("inside function")
 		const userName = window.claims["cognito:username"]
 		console.log("in main user name is " + userName) 
-		const response = await fetch('https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes?userId=' + userName);
+		const response = await fetch('https://b71y9yeuzk.execute-api.us-east-1.amazonaws.com/dev/notes?userId=' + userName);
 		const myJson = await response.json(); //extract JSON from the http response
 		// do something with myJson
 		console.log(myJson)
@@ -257,7 +257,7 @@
 				newTitle = "Text note " + (new Date()).toISOString().substring(0,10)
 			}
 			// save the note into the database 
-			const apiUrl = 'https://v5gnr5k7hh.execute-api.us-east-1.amazonaws.com/dev/notes/insert';
+			const apiUrl = 'https://b71y9yeuzk.execute-api.us-east-1.amazonaws.com/dev/notes/insert';
 			const postData = {
 				userId: window.claims["cognito:username"],
 				title: newTitle,
